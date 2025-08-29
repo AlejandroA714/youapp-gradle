@@ -1,6 +1,6 @@
 rootProject.name = "platform-instances"
 
-include(":authentication-server")
+include(":authorization-server")
 
 pluginManagement {
     repositories {

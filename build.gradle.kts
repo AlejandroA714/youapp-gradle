@@ -1,17 +1,14 @@
 plugins {
+    kotlin("jvm") version "2.2.0"
+    kotlin("plugin.spring") version "1.9.25" apply false
     id("org.springframework.boot") version "3.5.5" apply false
     id("com.google.cloud.tools.jib") version "3.4.0" apply false
     id("com.sv.youapp.infrastructure.formatter") version "1.0.0-SNAPSHOT" apply false
-    id("java")
 }
 
 allprojects {
     group = "com.sv.youapp.services"
     version = "1.0.3-SNAPSHOT"
-    apply(plugin = "java")
-    java {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(21))
-    }
     repositories {
         mavenLocal()
         mavenCentral()
@@ -19,10 +16,18 @@ allprojects {
 }
 
 subprojects {
+    apply(plugin = "maven-publish")
+    apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "org.springframework.boot")
     apply(plugin = "com.google.cloud.tools.jib")
+    apply(plugin = "org.jetbrains.kotlin.plugin.spring")
     apply(plugin = "com.sv.youapp.infrastructure.formatter")
-    apply(plugin = "maven-publish")
+    kotlin {
+        jvmToolchain(21)
+        compilerOptions {
+            freeCompilerArgs.addAll("-Xjsr305=strict")
+        }
+    }
     dependencies{
         implementation(platform("com.sv.youapp.infrastructure:bom:1.0.0-SNAPSHOT"))
         implementation("org.springframework.boot:spring-boot-starter-web"){
