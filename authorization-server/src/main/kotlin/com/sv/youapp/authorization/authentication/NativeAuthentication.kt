@@ -12,9 +12,9 @@ class NativeAuthentication(
     val password: String,
     val clientPrincipal: OAuth2ClientAuthenticationToken,
     val state: String?,
-    val scopes: Set<GrantedAuthority>
+    val scopes: Set<GrantedAuthority>,
 ) : Authentication {
-    var _authenticated = false
+    private var auth = false
 
     override fun getAuthorities(): Collection<GrantedAuthority?> {
         return scopes
@@ -33,12 +33,13 @@ class NativeAuthentication(
     }
 
     override fun isAuthenticated(): Boolean {
-        return _authenticated
+        return auth
     }
 
     override fun setAuthenticated(isAuthenticated: Boolean) {
-        _authenticated = isAuthenticated
+        auth = isAuthenticated
     }
+
     // sub
     override fun getName(): String {
         return username

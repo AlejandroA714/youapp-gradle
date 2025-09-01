@@ -22,7 +22,7 @@ class NativeAuthenticationConverter : AuthenticationConverter {
         if (NATIVE_GRANT_TYPE.equals(grantType)) {
             return null
         }
-        val clientPrincipal: OAuth2ClientAuthenticationToken = SecurityContextHolder.getContext().authentication as OAuth2ClientAuthenticationToken
+        val clientPrincipal = SecurityContextHolder.getContext().authentication as OAuth2ClientAuthenticationToken
         val parameters: MultiValueMap<String?, String?> = getParameters(request)
         // username: (REQUIRED)
         val username: String =
@@ -43,14 +43,20 @@ class NativeAuthenticationConverter : AuthenticationConverter {
         var scopes: MutableSet<String?>? = null
         val scope = parameters.getFirst(OAuth2ParameterNames.SCOPE)
         if (StringUtils.hasText(scope) && parameters[OAuth2ParameterNames.SCOPE]!!.size != 1) {
-           throw OAuth2AuthenticationException(
-               OAuth2Error( OAuth2ErrorCodes.INVALID_REQUEST, "OAuth 2.0 Parameter: " + OAuth2ParameterNames.SCOPE, null))
+            val error = "OAuth 2.0 Parameter: " + OAuth2ParameterNames.SCOPE
+            throw OAuth2AuthenticationException(
+                OAuth2Error(OAuth2ErrorCodes.INVALID_REQUEST, error, null),
+            )
         }
         if (StringUtils.hasText(scope)) {
-            scopes = HashSet<String?>(listOf(*StringUtils.delimitedListToStringArray(scope, " ")))
+            scopes = HashSet(listOf(*StringUtils.delimitedListToStringArray(scope, " ")))
         }
-        return NativeAuthentication(username, password, clientPrincipal, state,
-            scopes?.map { SimpleGrantedAuthority(it) }?.toSet() ?: setOf()
+        return NativeAuthentication(
+            username,
+            password,
+            clientPrincipal,
+            state,
+            scopes?.map { SimpleGrantedAuthority(it) }?.toSet() ?: setOf(),
         )
     }
 }

@@ -7,36 +7,26 @@ import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
 import com.sv.youapp.authorization.converter.NativeAuthenticationConverter
 import com.sv.youapp.authorization.providers.NativeAuthenticationProvider
+import com.sv.youapp.authorization.services.AuthenticationService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.oauth2.core.AuthorizationGrantType
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod
 import org.springframework.security.oauth2.core.OAuth2Token
-import org.springframework.security.oauth2.core.oidc.OidcScopes
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder
-import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationService
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService
-import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClient
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2TokenEndpointConfigurer
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings
-import org.springframework.security.oauth2.server.authorization.settings.ClientSettings
 import org.springframework.security.oauth2.server.authorization.token.DelegatingOAuth2TokenGenerator
 import org.springframework.security.oauth2.server.authorization.token.JwtGenerator
 import org.springframework.security.oauth2.server.authorization.token.OAuth2AccessTokenGenerator
 import org.springframework.security.oauth2.server.authorization.token.OAuth2RefreshTokenGenerator
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator
-import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.SecurityFilterChain
 import java.security.KeyPair
 import java.security.KeyPairGenerator
@@ -53,6 +43,7 @@ class WebSecurityConfig {
         http: HttpSecurity,
         authorizationService: OAuth2AuthorizationService,
         tokenGenerator: OAuth2TokenGenerator<OAuth2Token>,
+        authenticationService: AuthenticationService,
     ): SecurityFilterChain {
         val authorizationServerConfigurer: OAuth2AuthorizationServerConfigurer =
             OAuth2AuthorizationServerConfigurer.authorizationServer()
@@ -62,7 +53,7 @@ class WebSecurityConfig {
                 config.tokenEndpoint { configurer: OAuth2TokenEndpointConfigurer ->
                     configurer.accessTokenRequestConverter(NativeAuthenticationConverter())
                     configurer.authenticationProvider(
-                        NativeAuthenticationProvider(authorizationService, tokenGenerator),
+                        NativeAuthenticationProvider(authorizationService, tokenGenerator, authenticationService),
                     )
                 }
                 config.oidc(Customizer.withDefaults())
@@ -80,50 +71,12 @@ class WebSecurityConfig {
     }
 
     @Bean
-    fun authorizationService(): OAuth2AuthorizationService {
-        return InMemoryOAuth2AuthorizationService()
-    }
-
-    @Bean
     @Order(2)
     fun defaultSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .authorizeHttpRequests { auth -> auth.anyRequest().authenticated() }
             .formLogin(Customizer.withDefaults())
         return http.build()
-    }
-
-    @Bean
-    fun userDetailsService(): UserDetailsService {
-        val user =
-            User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("{noop}password")
-                .roles("USER")
-                .build()
-        return InMemoryUserDetailsManager(user)
-    }
-
-    @Bean
-    fun registeredClientRepository(): RegisteredClientRepository {
-        val oidcClient =
-            RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("oidc-client")
-                .clientSecret("{noop}secret")
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType("urn:ietf:params:oauth:grant-type:native"))
-                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                // .redirectUri("http://127.0.0.1:8080/login/oauth2/code/oidc-client")
-                // .postLogoutRedirectUri("http://127.0.0.1:8080/")
-                // .scope(OidcScopes.OPENID)
-                .scope(OidcScopes.PROFILE)
-                .clientSettings(
-                    ClientSettings.builder().requireProofKey(true)
-                        .requireAuthorizationConsent(false).build(),
-                )
-                .build()
-
-        return InMemoryRegisteredClientRepository(oidcClient)
     }
 
     @Bean
