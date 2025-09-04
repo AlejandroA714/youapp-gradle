@@ -57,6 +57,7 @@ class NativeAuthenticationConverter : AuthenticationConverter {
             clientPrincipal,
             state,
             scopes?.map { SimpleGrantedAuthority(it) }?.toSet() ?: setOf(),
+            null,
         )
     }
 }

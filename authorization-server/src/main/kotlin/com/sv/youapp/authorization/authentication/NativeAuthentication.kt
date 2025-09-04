@@ -13,11 +13,12 @@ class NativeAuthentication(
     val clientPrincipal: OAuth2ClientAuthenticationToken,
     val state: String?,
     val scopes: Set<GrantedAuthority>,
+    var granted: Set<GrantedAuthority>?,
 ) : Authentication {
     private var auth = false
 
-    override fun getAuthorities(): Collection<GrantedAuthority?> {
-        return scopes
+    override fun getAuthorities(): Set<GrantedAuthority>? {
+        return granted
     }
 
     override fun getCredentials(): Any {

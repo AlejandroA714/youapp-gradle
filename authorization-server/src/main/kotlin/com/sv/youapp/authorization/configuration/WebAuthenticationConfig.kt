@@ -1,5 +1,6 @@
 package com.sv.youapp.authorization.configuration
 
+import com.sv.youapp.authorization.authentication.NativeAuthentication
 import com.sv.youapp.authorization.repositories.UserRepository
 import com.sv.youapp.authorization.services.AuthenticationService
 import com.sv.youapp.authorization.services.impl.DefaultAuthenticationService
@@ -14,11 +15,16 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod
 import org.springframework.security.oauth2.core.oidc.OidcScopes
 import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationService
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer
 import java.util.UUID
+
+private const val AUTHORITIES = "authorities"
 
 @Configuration
 class WebAuthenticationConfig {
@@ -43,6 +49,23 @@ class WebAuthenticationConfig {
     @Bean
     fun authorizationService(): OAuth2AuthorizationService {
         return InMemoryOAuth2AuthorizationService()
+    }
+
+    @Bean
+    fun jwtTokenCustomizer(): OAuth2TokenCustomizer<JwtEncodingContext?> {
+        return OAuth2TokenCustomizer { context: JwtEncodingContext? ->
+            if (OAuth2TokenType.ACCESS_TOKEN == context!!.tokenType) {
+                val principal: NativeAuthentication = context.getPrincipal()
+                val authorities =
+                    principal.granted
+                        ?.map { it.authority }
+                        ?.toList()
+                        ?: emptyList()
+                context.claims.claims { claims ->
+                    claims[AUTHORITIES] = authorities
+                }
+            }
+        }
     }
 
     @Bean

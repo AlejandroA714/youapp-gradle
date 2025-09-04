@@ -19,7 +19,7 @@ class DefaultNativeUserDetails(
         val roleBasedAuthorities = u.roles.flatMap { role -> role.authorities.map { SimpleGrantedAuthority(it.name) } }
         val allAuthorities =
             (roleAuthorities + directAuthorities + roleBasedAuthorities)
-                .distinctBy { it.authority }
+                .distinctBy { it.authority }.toSet()
         return UserDTO(
             u.id,
             u.username,

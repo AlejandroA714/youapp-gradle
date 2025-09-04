@@ -11,7 +11,7 @@ class UserDTO(
     val email: String,
     val profilePictureUrl: String?,
     val registeredAt: Instant,
-    private val granted: List<GrantedAuthority>,
+    private val granted: Set<GrantedAuthority>,
     private val enabled: Boolean,
 ) : UserDetails {
     override fun isEnabled() = enabled

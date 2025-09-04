@@ -5,6 +5,7 @@ import com.sv.youapp.authorization.authentication.NativeAuthentication
 import com.sv.youapp.authorization.services.AuthenticationService
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.oauth2.core.AuthorizationGrantType
 import org.springframework.security.oauth2.core.ClaimAccessor
@@ -42,6 +43,7 @@ class NativeAuthenticationProvider(
         }
         // DO NECESSARY STUFF, GET FROM DB, GET ROLES, AND PUT IN
         val user: UserDetails = authenticationService.authenticate(authentication)
+        nativeAuthentication.granted = user.authorities as Set<GrantedAuthority>
         //
         nativeAuthentication.isAuthenticated = true
         val tokenContextBuilder: DefaultOAuth2TokenContext.Builder =
@@ -109,6 +111,7 @@ class NativeAuthenticationProvider(
         } else {
             authorizationBuilder.accessToken(accessToken)
         }
+
         val authorization = authorizationBuilder.build()
         this.authorizationService.save(authorization)
         return OAuth2AccessTokenAuthenticationToken(

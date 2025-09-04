@@ -23,9 +23,11 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2TokenEndpointConfigurer
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings
 import org.springframework.security.oauth2.server.authorization.token.DelegatingOAuth2TokenGenerator
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext
 import org.springframework.security.oauth2.server.authorization.token.JwtGenerator
 import org.springframework.security.oauth2.server.authorization.token.OAuth2AccessTokenGenerator
 import org.springframework.security.oauth2.server.authorization.token.OAuth2RefreshTokenGenerator
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator
 import org.springframework.security.web.SecurityFilterChain
 import java.security.KeyPair
@@ -94,9 +96,13 @@ class WebSecurityConfig {
     }
 
     @Bean
-    fun tokenGenerator(jwkSource: JWKSource<SecurityContext>): OAuth2TokenGenerator<OAuth2Token> {
+    fun tokenGenerator(
+        jwkSource: JWKSource<SecurityContext>,
+        jwtCustomizer: OAuth2TokenCustomizer<JwtEncodingContext>,
+    ): OAuth2TokenGenerator<OAuth2Token> {
         val jwtEncoder = NimbusJwtEncoder(jwkSource)
         val jwtGenerator = JwtGenerator(jwtEncoder)
+        jwtGenerator.setJwtCustomizer(jwtCustomizer)
         return DelegatingOAuth2TokenGenerator(
             OAuth2AccessTokenGenerator(),
             OAuth2RefreshTokenGenerator(),
@@ -115,8 +121,7 @@ class WebSecurityConfig {
     }
 
     @Bean
-    fun jwtDecoder(jwkSource: JWKSource<SecurityContext>): JwtDecoder =
-        OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource)
+    fun jwtDecoder(jwkSource: JWKSource<SecurityContext>): JwtDecoder = OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource)
 
     @Bean
     fun authorizationServerSettings(): AuthorizationServerSettings = AuthorizationServerSettings.builder().build()
