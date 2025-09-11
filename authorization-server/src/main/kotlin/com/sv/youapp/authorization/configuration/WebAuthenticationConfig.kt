@@ -1,12 +1,12 @@
 package com.sv.youapp.authorization.configuration
 
-import com.sv.youapp.authorization.authentication.NativeAuthentication
 import com.sv.youapp.authorization.repositories.UserRepository
 import com.sv.youapp.authorization.services.AuthenticationService
 import com.sv.youapp.authorization.services.impl.DefaultAuthenticationService
 import com.sv.youapp.authorization.services.impl.DefaultNativeUserDetails
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -55,9 +55,9 @@ class WebAuthenticationConfig {
     fun jwtTokenCustomizer(): OAuth2TokenCustomizer<JwtEncodingContext?> {
         return OAuth2TokenCustomizer { context: JwtEncodingContext? ->
             if (OAuth2TokenType.ACCESS_TOKEN == context!!.tokenType) {
-                val principal: NativeAuthentication = context.getPrincipal()
+                val principal: Authentication = context.getPrincipal()
                 val authorities =
-                    principal.granted
+                    principal.authorities
                         ?.map { it.authority }
                         ?.toList()
                         ?: emptyList()
@@ -75,11 +75,11 @@ class WebAuthenticationConfig {
                 .clientId("oidc-client")
                 .clientSecret("\$2a\$10\$FTAJRyxFIIyZQuIYflBOO.HXgElrorW6oB07/8eUA3kD2SbKVLRrG")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType("urn:ietf:params:oauth:grant-type:native"))
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                // .redirectUri("http://127.0.0.1:8080/login/oauth2/code/oidc-client")
-                // .postLogoutRedirectUri("http://127.0.0.1:8080/")
-                // .scope(OidcScopes.OPENID)
+                .redirectUri("https://oauthdebugger.com/debug")
                 .scope(OidcScopes.PROFILE)
                 .clientSettings(
                     ClientSettings.builder().requireProofKey(true)

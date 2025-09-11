@@ -19,7 +19,7 @@ import org.springframework.util.StringUtils
 class NativeAuthenticationConverter : AuthenticationConverter {
     override fun convert(request: HttpServletRequest): Authentication? {
         val grantType: String = request.getParameter(OAuth2ParameterNames.GRANT_TYPE)
-        if (NATIVE_GRANT_TYPE.equals(grantType)) {
+        if (!NATIVE_GRANT_TYPE.value.equals(grantType)) {
             return null
         }
         val clientPrincipal = SecurityContextHolder.getContext().authentication as OAuth2ClientAuthenticationToken

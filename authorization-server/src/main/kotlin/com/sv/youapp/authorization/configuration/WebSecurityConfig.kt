@@ -11,6 +11,7 @@ import com.sv.youapp.authorization.services.AuthenticationService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
+import org.springframework.http.MediaType
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -30,6 +31,8 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Refr
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
+import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.interfaces.RSAPrivateKey
@@ -63,12 +66,12 @@ class WebSecurityConfig {
             .authorizeHttpRequests { auth ->
                 auth.anyRequest().authenticated()
             }.csrf { csrf -> csrf.disable() }
-//            .exceptionHandling { exceptions ->
-//                exceptions.defaultAuthenticationEntryPointFor(
-//                    LoginUrlAuthenticationEntryPoint("/login"),
-//                    MediaTypeRequestMatcher(MediaType.TEXT_HTML)
-//                )
-//            }
+            .exceptionHandling { exceptions ->
+                exceptions.defaultAuthenticationEntryPointFor(
+                    LoginUrlAuthenticationEntryPoint("/login"),
+                    MediaTypeRequestMatcher(MediaType.TEXT_HTML)
+                )
+            }
         return http.build()
     }
 
