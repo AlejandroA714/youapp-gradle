@@ -29,8 +29,9 @@ class ClientRegistrationConfiguration {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType("urn:ietf:params:oauth:grant-type:native"))
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("https://oauthdebugger.com/debug")
-                .redirectUri("com.sv.youapp:/oauth2")
+                //.redirectUri("https://oauthdebugger.com/debug")
+                .redirectUri("http://192.168.1.24:8081/oauth2/callback")
+                //.redirectUri("youapp/oauth2")
                 .scope(OidcScopes.PROFILE)
                 .scope(OidcScopes.OPENID)
                 .scope("offline_access")
@@ -38,7 +39,7 @@ class ClientRegistrationConfiguration {
                     TokenSettings.builder().reuseRefreshTokens(false)
                         .refreshTokenTimeToLive(Duration.ofDays(30)).build())
                 .clientSettings(
-                    ClientSettings.builder().requireProofKey(true)
+                    ClientSettings.builder().requireProofKey(false)
                         .requireAuthorizationConsent(false).build(),
                 )
                 .build()

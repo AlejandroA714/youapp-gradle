@@ -1,8 +1,11 @@
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 plugins {
     kotlin("jvm") version "2.2.0"
     kotlin("plugin.spring") version "1.9.25" apply false
     id("org.springframework.boot") version "3.5.5" apply false
-    id("com.google.cloud.tools.jib") version "3.4.0" apply false
+    id("com.google.cloud.tools.jib") version "3.4.5" apply false
     id("com.sv.youapp.infrastructure.formatter") version "1.0.0-SNAPSHOT" apply false
 }
 
@@ -30,8 +33,8 @@ subprojects {
     }
     dependencies{
         implementation(platform("com.sv.youapp.infrastructure:bom:1.0.0-SNAPSHOT"))
-        implementation("org.springframework.boot:spring-boot-starter-web"){
-            exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
+        implementation("org.springframework.boot:spring-boot-starter-webflux"){
+            exclude(group = "org.springframework.boot", module = "spring-boot-starter-reactor-netty")
         }
         implementation("org.springframework.boot:spring-boot-starter-actuator")
         implementation("org.springframework.boot:spring-boot-starter-undertow")
@@ -47,26 +50,31 @@ subprojects {
 
     extensions.configure(com.google.cloud.tools.jib.gradle.JibExtension::class.java) {
         from {
-            image = "alejandroa714/zulu-jvm:21.0.8-jre-headless"
+            image = "alejandroa714/zulu-alpine-java:21.0.8-jdk-headless"
             platforms {
                 platform { architecture = "arm64"; os = "linux" }
                 platform { architecture = "amd64"; os = "linux" }
             }
         }
         to {
+            setAllowInsecureRegistries(true)
             image = "alejandroa714/${project.name}"
-            tags = setOf(project.version.toString())
+            tags = setOf("${project.version}.${timeStamp()}")
             auth {
                 username = System.getenv("DOCKER_USERNAME")
                 password = System.getenv("DOCKER_PASSWORD")
             }
         }
         container {
-            jvmFlags = listOf("-XX:MaxRAMPercentage=75","-server","-Djava.security.egd=file:/dev/./urandom")
+            jvmFlags = listOf("-XX:MaxRAMPercentage=75","-server","-Djava.security.egd=file:/dev/./urandom","-Djava.awt.headless=true")
             creationTime = "USE_CURRENT_TIMESTAMP"
             volumes = listOf("/tmp")
-            //user = "valejo"
+            user = "spring"
             workingDirectory = "/app"
         }
     }
+}
+
+fun timeStamp(): String {
+    return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd.HHmmss"))
 }
