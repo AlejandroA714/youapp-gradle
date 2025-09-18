@@ -5,14 +5,20 @@ import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
 import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
+import com.sv.youapp.authorization.services.AuthenticationService
+import com.sv.youapp.authorization.services.impl.DefaultAuthenticationService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.core.OAuth2Token
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings
 import org.springframework.security.oauth2.server.authorization.token.DelegatingOAuth2TokenGenerator
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext
 import org.springframework.security.oauth2.server.authorization.token.JwtGenerator
@@ -30,7 +36,6 @@ private const val AUTHORITIES = "authorities"
 
 @Configuration
 class JwksConfig {
-
     @Bean
     fun jwkSource(): JWKSource<SecurityContext> {
         val keyPair = generateRsaKey()
@@ -56,6 +61,18 @@ class JwksConfig {
     }
 
     @Bean
+    fun passwordEncoder(): PasswordEncoder {
+        return BCryptPasswordEncoder(12)
+    }
+
+    @Bean
+    fun authorizationServerSettings(): AuthorizationServerSettings {
+        return AuthorizationServerSettings.builder()
+            .issuer("https://f34a1d4ff096.ngrok-free.app")
+            .build()
+    }
+
+    @Bean
     fun tokenGenerator(
         jwkSource: JWKSource<SecurityContext>,
         jwtCustomizer: OAuth2TokenCustomizer<JwtEncodingContext>,
@@ -68,6 +85,14 @@ class JwksConfig {
             OAuth2RefreshTokenGenerator(),
             jwtGenerator,
         )
+    }
+
+    @Bean
+    fun authenticationService(
+        userDetailsService: UserDetailsService,
+        passwordEncoder: PasswordEncoder,
+    ): AuthenticationService {
+        return DefaultAuthenticationService(userDetailsService, passwordEncoder)
     }
 
     @Bean
@@ -89,5 +114,4 @@ class JwksConfig {
 
     @Bean
     fun jwtDecoder(jwkSource: JWKSource<SecurityContext>): JwtDecoder = OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource)
-
 }

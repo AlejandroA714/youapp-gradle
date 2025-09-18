@@ -49,7 +49,7 @@ class WebSecurityConfig {
             .exceptionHandling { exceptions ->
                 exceptions.defaultAuthenticationEntryPointFor(
                     LoginUrlAuthenticationEntryPoint("/login"),
-                    MediaTypeRequestMatcher(MediaType.TEXT_HTML)
+                    MediaTypeRequestMatcher(MediaType.TEXT_HTML),
                 )
             }
         return http.build()
