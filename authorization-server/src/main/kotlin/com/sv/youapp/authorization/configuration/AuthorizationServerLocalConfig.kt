@@ -29,25 +29,10 @@ class AuthorizationServerLocalConfig {
                 .clientId("oidc-client")
                 .clientSecret("\$2a\$12\$q1rY2JnWSH/xF/bGvnEM7eTbCjRfTxRw7gDd2DWZ/AeKPNfCWCvHq")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
-                .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType("urn:ietf:params:oauth:grant-type:native"))
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                // .redirectUri("https://oauthdebugger.com/debug")
                 .redirectUri("http://192.168.1.24:8081/oauth2/callback")
-                // .redirectUri("youapp/oauth2")
-                .scope(OidcScopes.PROFILE)
-                .scope(OidcScopes.OPENID)
-                .scope("offline_access")
-                .tokenSettings(
-                    TokenSettings.builder().reuseRefreshTokens(false)
-                        .refreshTokenTimeToLive(Duration.ofDays(30)).build(),
-                )
-                .clientSettings(
-                    ClientSettings.builder().requireProofKey(false)
-                        .requireAuthorizationConsent(false).build(),
-                )
                 .build()
         return InMemoryRegisteredClientRepository(oidcClient)
     }
@@ -64,7 +49,6 @@ class AuthorizationServerLocalConfig {
                 .builder()
                 .username("user")
                 .password("$2a$12\$tTybMgef5ZYYRzIpOzqEEuO9wAj76FnMogVgL0CO0mYFYRW0Wl7/C")
-                .roles("USER")
                 .build()
         return InMemoryUserDetailsManager(user)
     }

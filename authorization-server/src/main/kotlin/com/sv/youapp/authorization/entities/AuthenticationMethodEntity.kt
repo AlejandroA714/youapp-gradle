@@ -13,7 +13,7 @@ import jakarta.persistence.Table
 class AuthenticationMethodEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long,
+    var id: Int,
     @Column(nullable = false, unique = true)
     var name: String,
 ) {

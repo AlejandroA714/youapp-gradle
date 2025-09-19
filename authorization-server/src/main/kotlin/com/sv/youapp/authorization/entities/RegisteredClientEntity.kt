@@ -27,6 +27,10 @@ class RegisteredClientEntity(
     var clientSecretExpiresAt: Instant?,
     @Column(nullable = false)
     var clientName: String,
+    @OneToOne(mappedBy = "client")
+    var clientSettings: SettingsEntity?,
+    @OneToOne(mappedBy = "client")
+    var tokenSettings: TokenSettingsEntity?,
 ) {
     @ManyToMany
     @JoinTable(
@@ -59,10 +63,4 @@ class RegisteredClientEntity(
         inverseJoinColumns = [JoinColumn(name = "scope_id")],
     )
     lateinit var scopes: MutableSet<ScopeEntity>
-
-    @OneToOne(mappedBy = "client")
-    var clientSettings: SettingsEntity? = null
-
-    @OneToOne(mappedBy = "client")
-    var tokenSettings: TokenSettingsEntity? = null
 }

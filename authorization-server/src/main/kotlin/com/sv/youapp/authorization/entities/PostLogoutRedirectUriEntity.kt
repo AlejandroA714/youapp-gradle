@@ -12,7 +12,7 @@ import jakarta.persistence.Table
 class PostLogoutRedirectUriEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long,
+    var id: Int,
     @Column(nullable = false, length = 255)
     var redirectUri: String,
 )

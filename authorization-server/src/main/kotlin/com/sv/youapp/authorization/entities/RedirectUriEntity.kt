@@ -12,7 +12,7 @@ import jakarta.persistence.Table
 class RedirectUriEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long,
+    var id: Int,
     @Column(nullable = false, length = 255)
     var redirectUri: String,
 )

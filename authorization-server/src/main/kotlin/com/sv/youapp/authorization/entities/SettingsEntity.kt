@@ -14,7 +14,7 @@ import jakarta.persistence.Table
 class SettingsEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long,
+    var id: Int,
     @OneToOne
     @JoinColumn(name = "client_id")
     var client: RegisteredClientEntity,

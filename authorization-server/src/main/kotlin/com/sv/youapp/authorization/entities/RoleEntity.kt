@@ -18,7 +18,7 @@ import jakarta.persistence.Table
 )
 class RoleEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long?,
+    var id: Int,
     @Column(nullable = false, unique = true, length = 100)
     var name: String,
     @Column(length = 255)

@@ -15,7 +15,7 @@ import jakarta.persistence.Table
 )
 class AuthorityEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null,
+    var id: Int,
     @Column(nullable = false, unique = true, length = 100)
     var name: String,
     @Column(length = 255)

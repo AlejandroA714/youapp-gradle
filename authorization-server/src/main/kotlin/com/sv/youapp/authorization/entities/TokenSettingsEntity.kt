@@ -15,16 +15,16 @@ import java.time.Duration
 class TokenSettingsEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long,
+    var id: Int,
     @OneToOne
     @JoinColumn(name = "client_id")
     var client: RegisteredClientEntity,
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "INT UNSIGNED")
     var accessTokenTtl: Duration,
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "INT UNSIGNED")
     var refreshTokenTtl: Duration,
     @Column(nullable = false)
     var reuseRefreshTokens: Boolean,
-    @Column(nullable = false)
+    @Column(nullable = false, length = 32)
     var accessTokenFormat: String,
 )

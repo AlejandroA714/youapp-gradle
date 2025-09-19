@@ -13,7 +13,7 @@ import jakarta.persistence.Table
 class GrantTypeEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long,
+    var id: Int,
     @Column(nullable = false, unique = true)
     var name: String,
 ) {

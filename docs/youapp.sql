@@ -3,7 +3,7 @@ START TRANSACTION;
 SET time_zone = "-06:00";
 
 CREATE TABLE `authorities` (
-                               `id` bigint NOT NULL,
+                               `id` int NOT NULL,
                                `name` varchar(100) NOT NULL,
                                `description` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -13,7 +13,7 @@ CREATE TABLE `authorities` (
 --
 
 CREATE TABLE `roles` (
-                         `id` bigint NOT NULL,
+                         `id` int NOT NULL,
                          `name` varchar(100) NOT NULL,
                          `description` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -22,9 +22,9 @@ CREATE TABLE `roles` (
 -- Volcado de datos para la tabla `roles`
 --
 
-INSERT INTO `roles` (`id`, `name`, `description`) VALUES
-                                                      (1, 'ROLE_ADMIN', 'Administrador con todos los permisos'),
-                                                      (2, 'ROLE_USER', 'Usuario estándar');
+-- INSERT INTO `roles` (`id`, `name`, `description`) VALUES
+--                                                      (1, 'ROLE_ADMIN', 'Administrador con todos los permisos'),
+--                                                      (2, 'ROLE_USER', 'Usuario estándar');
 
 -- --------------------------------------------------------
 
@@ -33,8 +33,8 @@ INSERT INTO `roles` (`id`, `name`, `description`) VALUES
 --
 
 CREATE TABLE `role_authorities` (
-                                    `role_id` bigint NOT NULL,
-                                    `authority_id` bigint NOT NULL
+                                    `role_id` int NOT NULL,
+                                    `authority_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `role_authorities` (
 --
 
 CREATE TABLE `users` (
-                         `id` bigint NOT NULL,
+                         `id` int NOT NULL,
                          `username` varchar(100) NOT NULL,
                          `password` varchar(255) NOT NULL,
                          `email` varchar(255) NOT NULL,
@@ -58,14 +58,14 @@ INSERT INTO `users` (`id`, `username`, `password`, `email`, `profile_picture_url
 
 
 CREATE TABLE `user_authorities` (
-                                    `user_id` bigint NOT NULL,
-                                    `authority_id` bigint NOT NULL
+                                    `user_id` int NOT NULL,
+                                    `authority_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `user_roles` (
-                              `user_id` bigint NOT NULL,
-                              `role_id` bigint NOT NULL
+                              `user_id` int NOT NULL,
+                              `role_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -101,13 +101,13 @@ ALTER TABLE `user_roles`
 
 
 ALTER TABLE `authorities`
-    MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+    MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `roles`
-    MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+    MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `users`
-    MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+    MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `role_authorities`
     ADD CONSTRAINT `role_authorities_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE,
@@ -174,34 +174,34 @@ CREATE TABLE client_scope (
 );
 
 CREATE TABLE client_redirect_uri (
-     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+     id INT AUTO_INCREMENT PRIMARY KEY,
      client_id VARCHAR(255) NOT NULL,
      redirect_uri VARCHAR(255) NOT NULL,
      FOREIGN KEY (client_id) REFERENCES client(id) ON DELETE CASCADE
 );
 
 CREATE TABLE client_post_logout_redirect_uri (
-     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+     id INT AUTO_INCREMENT PRIMARY KEY,
      client_id VARCHAR(255) NOT NULL,
      redirect_uri VARCHAR(255) NOT NULL,
      FOREIGN KEY (client_id) REFERENCES client(id) ON DELETE CASCADE
 );
 
 CREATE TABLE client_settings (
-     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+     id INT AUTO_INCREMENT PRIMARY KEY,
      client_id VARCHAR(255) NOT NULL,
-     require_proof_key BOOLEAN NOT NULL DEFAULT FALSE,
+     require_proof_key BOOLEAN NOT NULL DEFAULT TRUE,
      require_authorization_consent BOOLEAN NOT NULL DEFAULT FALSE,
      FOREIGN KEY (client_id) REFERENCES client(id) ON DELETE CASCADE
 );
 
 CREATE TABLE token_settings (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     client_id VARCHAR(255) NOT NULL,
-    access_token_ttl BIGINT DEFAULT 57600,
-    refresh_token_ttl BIGINT DEFAULT 691200,
+    access_token_ttl INT UNSIGNED DEFAULT 57600,
+    refresh_token_ttl INT UNSIGNED DEFAULT 691200,
     reuse_refresh_tokens BOOLEAN DEFAULT FALSE,
-    accessTokenFormat VARCHAR(64) DEFAULT 'self-contained',
+    access_token_format VARCHAR(32) DEFAULT 'self-contained',
     FOREIGN KEY (client_id) REFERENCES client(id) ON DELETE CASCADE
 );
 

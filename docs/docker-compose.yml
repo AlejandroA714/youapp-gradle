@@ -1,0 +1,45 @@
+networks:
+  youapp-net:
+    external: true
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: youapp
+      MYSQL_USER: oauth_user
+      MYSQL_PASSWORD: oauthpass
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - youapp-net
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.2-apache
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: rootpass
+    ports:
+      - "8081:80"
+    networks:
+      - youapp-net
+  redis:
+    image: redis:8.2.1-alpine
+    container_name: redis
+    command: ["redis-server", "--appendonly", "yes","--save", "60", "1", "--loglevel", "warning"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - youapp-net
+    ports:
+      - "6379:6379"
+
+volumes:
+  mysql_data:
+  redis_data:
