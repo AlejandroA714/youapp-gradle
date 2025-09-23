@@ -1,4 +1,4 @@
-package com.sv.youapp.authorization.entities
+package com.sv.youapp.authorization.entities.jpa
 
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column

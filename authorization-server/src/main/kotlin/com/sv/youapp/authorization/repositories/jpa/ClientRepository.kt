@@ -1,6 +1,6 @@
-package com.sv.youapp.authorization.repositories
+package com.sv.youapp.authorization.repositories.jpa
 
-import com.sv.youapp.authorization.entities.RegisteredClientEntity
+import com.sv.youapp.authorization.entities.jpa.RegisteredClientEntity
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.Optional

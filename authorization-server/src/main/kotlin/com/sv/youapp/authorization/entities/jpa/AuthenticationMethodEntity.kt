@@ -1,4 +1,4 @@
-package com.sv.youapp.authorization.entities
+package com.sv.youapp.authorization.entities.jpa
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -9,14 +9,14 @@ import jakarta.persistence.ManyToMany
 import jakarta.persistence.Table
 
 @Entity
-@Table(name = "scope")
-class ScopeEntity(
+@Table(name = "authentication_method")
+class AuthenticationMethodEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Int,
     @Column(nullable = false, unique = true)
     var name: String,
 ) {
-    @ManyToMany(mappedBy = "scopes")
+    @ManyToMany(mappedBy = "authenticationMethods")
     lateinit var clients: MutableSet<RegisteredClientEntity>
 }

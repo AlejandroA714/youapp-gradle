@@ -30,12 +30,11 @@ class OAuth2CallBackController(private val tokenExchangeService: TokenExchangeSe
         val q = listOf(
             "response_type=code",
             "client_id=oidc-client",
-            "redirect_uri=http://192.168.1.24:8081/oauth2/callback",
+            "redirect_uri=http://192.168.1.60:8083/oauth2/callback",
             "scope=profile",
             "state=asd123sad" // ← state = sid generado por el BFF
         ).joinToString("&")
-       // return Mono.just(Rendering.redirectTo("http://192.168.1.24:8080/oauth2/authorize?$q").status(HttpStatus.FOUND).build());
-        return redirect(res,"http://192.168.1.24:8080/oauth2/authorize?$q")
+        return redirect(res,"http://192.168.1.60:8082/oauth2/authorize?$q")
     }
 
     private fun redirect(

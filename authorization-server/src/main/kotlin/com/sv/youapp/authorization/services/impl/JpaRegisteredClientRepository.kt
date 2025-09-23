@@ -1,7 +1,7 @@
 package com.sv.youapp.authorization.services.impl
 
 import com.sv.youapp.authorization.mapper.toRegisteredClient
-import com.sv.youapp.authorization.repositories.ClientRepository
+import com.sv.youapp.authorization.repositories.jpa.ClientRepository
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository
 

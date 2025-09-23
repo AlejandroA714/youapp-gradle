@@ -60,6 +60,7 @@ class WebSecurityConfig {
     fun defaultSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .authorizeHttpRequests { auth -> auth.anyRequest().authenticated() }
+            .csrf { csrf -> csrf.disable() }
             .formLogin(Customizer.withDefaults())
         return http.build()
     }

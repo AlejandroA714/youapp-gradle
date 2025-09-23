@@ -1,7 +1,7 @@
 package com.sv.youapp.authorization.services.impl
 
 import com.sv.youapp.authorization.dto.UserDTO
-import com.sv.youapp.authorization.repositories.UserRepository
+import com.sv.youapp.authorization.repositories.jpa.UserRepository
 import com.sv.youapp.authorization.services.NativeUserDetails
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails

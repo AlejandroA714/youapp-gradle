@@ -23,7 +23,7 @@ class WebSecurityConfig {
     @Bean
     fun webClient(builder: WebClient.Builder): WebClient {
         return builder
-            .baseUrl("http://localhost:8080")  // opcional, si siempre llamas al mismo host
+            .baseUrl("http://localhost:8082")
             //.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build()
     }

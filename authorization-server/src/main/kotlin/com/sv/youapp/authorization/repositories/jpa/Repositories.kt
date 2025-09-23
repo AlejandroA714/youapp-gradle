@@ -1,12 +1,12 @@
-package com.sv.youapp.authorization.repositories
+package com.sv.youapp.authorization.repositories.jpa
 
-import com.sv.youapp.authorization.entities.AuthenticationMethodEntity
-import com.sv.youapp.authorization.entities.GrantTypeEntity
-import com.sv.youapp.authorization.entities.PostLogoutRedirectUriEntity
-import com.sv.youapp.authorization.entities.RedirectUriEntity
-import com.sv.youapp.authorization.entities.ScopeEntity
-import com.sv.youapp.authorization.entities.SettingsEntity
-import com.sv.youapp.authorization.entities.TokenSettingsEntity
+import com.sv.youapp.authorization.entities.jpa.AuthenticationMethodEntity
+import com.sv.youapp.authorization.entities.jpa.GrantTypeEntity
+import com.sv.youapp.authorization.entities.jpa.PostLogoutRedirectUriEntity
+import com.sv.youapp.authorization.entities.jpa.RedirectUriEntity
+import com.sv.youapp.authorization.entities.jpa.ScopeEntity
+import com.sv.youapp.authorization.entities.jpa.SettingsEntity
+import com.sv.youapp.authorization.entities.jpa.TokenSettingsEntity
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface AuthenticationMethodRepository : JpaRepository<AuthenticationMethodEntity, Long>

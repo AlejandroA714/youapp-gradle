@@ -18,3 +18,6 @@ logging:
   level:
     org.springframework.security: TRACE
     org.hibernate.orm.connections.pooling: WARN
+    org.hibernate.orm.jdbc.extract: TRACE
+    i.lettuce.core.protocol.CommandEncoder: TRACE
+

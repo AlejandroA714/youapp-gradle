@@ -16,6 +16,8 @@ dependencies {
     runtimeOnly("com.mysql:mysql-connector-j")
     implementation("org.hibernate.orm:hibernate-core")
     implementation("org.springframework.data:spring-data-jpa")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.2")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.security:spring-security-oauth2-authorization-server")
 }

@@ -1,6 +1,6 @@
 package com.sv.youapp.authorization.mapper
 
-import com.sv.youapp.authorization.entities.RegisteredClientEntity
+import com.sv.youapp.authorization.entities.jpa.RegisteredClientEntity
 import org.springframework.security.oauth2.core.AuthorizationGrantType
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient
