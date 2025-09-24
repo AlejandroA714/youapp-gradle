@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.time.Instant
 
-class  UserDTO(
+class UserDTO(
     val id: Integer,
     private val username: String,
     private val password: String?,

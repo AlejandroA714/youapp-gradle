@@ -9,19 +9,15 @@ open class OAuth2AuthorizationCodeGrantAuthorization(
     id: String?,
     registeredClientId: String?,
     principalName: String,
-    authorizedScopes: MutableSet<String?>?,
+    scopes: String,
     accessToken: AccessToken?,
     refreshToken: RefreshToken?,
     val principal: Principal?,
-
     val authorizationRequest: OAuth2AuthorizationRequest?,
-
     val authorizationCode: AuthorizationCode?,
-
     @Indexed
-    val state: String?
-    ): AbstractGrantAuthorization(id, registeredClientId, principalName, authorizedScopes, accessToken, refreshToken) {
-
-    class AuthorizationCode(tokenValue: String?, issuedAt: Instant?, expiresAt: Instant?, invalidated: Boolean)
-        : AbstractToken(tokenValue, issuedAt, expiresAt, invalidated)
+    val state: String?,
+) : AbstractGrantAuthorization(id, registeredClientId, principalName, scopes, accessToken, refreshToken) {
+    class AuthorizationCode(tokenValue: String?, issuedAt: Instant?, expiresAt: Instant?, invalidated: Boolean) :
+        AbstractToken(tokenValue, issuedAt, expiresAt, invalidated)
 }

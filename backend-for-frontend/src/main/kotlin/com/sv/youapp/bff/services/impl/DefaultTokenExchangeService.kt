@@ -15,7 +15,7 @@ class DefaultTokenExchangeService(private val webClient: WebClient): TokenExchan
             .body (
                 BodyInserters.fromFormData("grant_type", "authorization_code")
                     .with("code", code)
-                    .with("redirect_uri", "http://192.168.1.60:8083/oauth2/callback")
+                    .with("redirect_uri", "http://192.168.1.24:8083/oauth2/callback")
             ).retrieve()
             .bodyToMono(Map::class.java)
     }

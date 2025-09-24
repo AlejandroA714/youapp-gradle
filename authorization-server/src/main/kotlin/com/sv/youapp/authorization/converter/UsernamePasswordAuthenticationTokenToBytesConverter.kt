@@ -6,9 +6,8 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 
 @WritingConverter
-class UsernamePasswordAuthenticationTokenToBytesConverter(val serializer: Jackson2JsonRedisSerializer<UsernamePasswordAuthenticationToken?>)
-    : Converter<UsernamePasswordAuthenticationToken?, ByteArray?> {
-
+class UsernamePasswordAuthenticationTokenToBytesConverter(val serializer: Jackson2JsonRedisSerializer<UsernamePasswordAuthenticationToken?>) :
+    Converter<UsernamePasswordAuthenticationToken?, ByteArray?> {
     override fun convert(value: UsernamePasswordAuthenticationToken): ByteArray {
         return this.serializer.serialize(value)
     }

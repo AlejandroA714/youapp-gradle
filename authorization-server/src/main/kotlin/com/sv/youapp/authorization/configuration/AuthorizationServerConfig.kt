@@ -1,12 +1,8 @@
 package com.sv.youapp.authorization.configuration
 
-import com.fasterxml.jackson.annotation.JsonSetter
-import com.fasterxml.jackson.annotation.Nulls
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import com.sv.youapp.authorization.converter.BytesToOAuth2AuthorizationRequestConverter
 import com.sv.youapp.authorization.converter.BytesToUsernamePasswordAuthenticationTokenConverter
-import com.sv.youapp.authorization.converter.OAuth2AuthorizationRequestToBytesConverter
 import com.sv.youapp.authorization.converter.UserDTOMixin
 import com.sv.youapp.authorization.converter.UsernamePasswordAuthenticationTokenToBytesConverter
 import com.sv.youapp.authorization.dto.UserDTO
@@ -29,20 +25,17 @@ import org.springframework.data.redis.serializer.StringRedisSerializer
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.jackson2.SecurityJackson2Modules
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository
 import org.springframework.security.oauth2.server.authorization.jackson2.OAuth2AuthorizationServerJackson2Module
 
-
 @Configuration
 @Profile("jdbc")
 @EnableRedisRepositories("com.sv.youapp.authorization.repositories.redis")
-@EnableJpaRepositories( "com.sv.youapp.authorization.repositories.jpa")
+@EnableJpaRepositories("com.sv.youapp.authorization.repositories.jpa")
 class AuthorizationServerConfig {
     @Bean
-    fun userDetailsService(
-        repository: UserRepository): UserDetailsService {
+    fun userDetailsService(repository: UserRepository): UserDetailsService {
         return DefaultNativeUserDetails(repository)
     }
 
@@ -52,13 +45,14 @@ class AuthorizationServerConfig {
     }
 
     @Bean
-    fun redisTemplate(connectionFactory: RedisConnectionFactory, objectMapper: ObjectMapper): RedisTemplate<String, Any> {
+    fun redisTemplate(
+        connectionFactory: RedisConnectionFactory,
+        objectMapper: ObjectMapper,
+    ): RedisTemplate<String, Any> {
         val template = RedisTemplate<String, Any>()
         template.connectionFactory = connectionFactory
 
-        val serializer = Jackson2JsonRedisSerializer(objectMapper,Any::class.java)
-            //serializer.setObjectMapper(objectMapper)
-
+        val serializer = Jackson2JsonRedisSerializer(objectMapper, Any::class.java)
         template.valueSerializer = serializer
         template.hashValueSerializer = serializer
         template.keySerializer = StringRedisSerializer()
@@ -70,9 +64,10 @@ class AuthorizationServerConfig {
 
     @Bean
     fun objectMapper(): ObjectMapper {
-        val objectMapper = ObjectMapper()
-            .registerKotlinModule()
-            .setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
+        val objectMapper =
+            ObjectMapper()
+                .registerKotlinModule()
+                .setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
         objectMapper.registerModules(SecurityJackson2Modules.getModules(javaClass.getClassLoader()))
         objectMapper.addMixIn(UserDTO::class.java, UserDTOMixin::class.java)
         objectMapper.registerModule(OAuth2AuthorizationServerJackson2Module())
@@ -81,25 +76,25 @@ class AuthorizationServerConfig {
 
     @Bean
     fun redisCustomConversions(objectMapper: ObjectMapper): RedisCustomConversions {
-
         val serializer =
             Jackson2JsonRedisSerializer(objectMapper, UsernamePasswordAuthenticationToken::class.java)
-       // val see =
-      //      Jackson2JsonRedisSerializer(objectMapper, OAuth2AuthorizationRequest::class.java)
+        // val see =
+        //      Jackson2JsonRedisSerializer(objectMapper, OAuth2AuthorizationRequest::class.java)
         return RedisCustomConversions(
             listOf<Any?>(
                 UsernamePasswordAuthenticationTokenToBytesConverter(serializer),
                 BytesToUsernamePasswordAuthenticationTokenConverter(serializer),
-               // OAuth2AuthorizationRequestToBytesConverter(see),
-               // BytesToOAuth2AuthorizationRequestConverter(see)
-            )
+                // OAuth2AuthorizationRequestToBytesConverter(see),
+                // BytesToOAuth2AuthorizationRequestConverter(see)
+            ),
         )
     }
 
     @Bean
-    fun authorizationService(registeredClientRepository: RegisteredClientRepository,
-                             authorizationGrantAuthorizationRepository: OAuth2AuthorizationGrantAuthorizationRepository
+    fun authorizationService(
+        registeredClientRepository: RegisteredClientRepository,
+        authorizationGrantAuthorizationRepository: OAuth2AuthorizationGrantAuthorizationRepository,
     ): OAuth2AuthorizationService {
-        return RedisOAuth2AuthorizationService(registeredClientRepository, authorizationGrantAuthorizationRepository);
+        return RedisOAuth2AuthorizationService(registeredClientRepository, authorizationGrantAuthorizationRepository)
     }
 }

@@ -9,53 +9,50 @@ import java.time.Instant
 
 @RedisHash("oauth2_authorization")
 abstract class AbstractGrantAuthorization(
-        @Id
-         val id: String?,
-
-         val registeredClientId: String?,
-
-         val principalName: String?,
-
-         private val authorizedScopes: MutableSet<String?>?,
-
-         val accessToken: AccessToken?,
-
-         val refreshToken: RefreshToken?) {
-
-    fun getAuthorizedScopes(): MutableSet<String?> {
-        return authorizedScopes?.let { return it } ?: HashSet()
+    @Id
+    val id: String?,
+    val registeredClientId: String?,
+    val principalName: String?,
+    val scopes: String,
+    val accessToken: AccessToken?,
+    val refreshToken: RefreshToken?,
+) {
+    class ClaimsHolder(private val claims: Map<String, Any?>?) {
+        fun sanitizeClaims(): Map<String?, Any?>? {
+            return this.claims?.mapValues { (_, value) ->
+                when (value) {
+                    is List<*> -> ArrayList(value)
+                    is Set<*> -> LinkedHashSet(value)
+                    is Map<*, *> -> LinkedHashMap(value)
+                    else -> value
+                }
+            }
+        }
     }
-
-    class ClaimsHolder(val claims: MutableMap<String?, Any?>?)
 
     abstract class AbstractToken(
         @Indexed
-         val tokenValue: String?,
-
+        val tokenValue: String?,
         val issuedAt: Instant?,
-
         val expiresAt: Instant?,
-
         val invalidated: Boolean,
     )
 
-    class AccessToken(tokenValue: String,
-                      issuedAt: Instant,
-                      expiresAt: Instant,
-                      invalidated: Boolean,
-                      val tokenType: OAuth2AccessToken.TokenType?,
+    class AccessToken(
+        tokenValue: String,
+        issuedAt: Instant,
+        expiresAt: Instant,
+        invalidated: Boolean,
+        val tokenType: OAuth2AccessToken.TokenType?,
+        val scopes: String,
+        val tokenFormat: OAuth2TokenFormat?,
+        val claims: ClaimsHolder?,
+    ) : AbstractToken(tokenValue, issuedAt, expiresAt, invalidated)
 
-                      val scopes: MutableSet<String?>?,
-
-                      val tokenFormat: OAuth2TokenFormat?,
-
-                      val claims: ClaimsHolder?,
-    ): AbstractToken(tokenValue, issuedAt, expiresAt, invalidated)
-
-    class RefreshToken(tokenValue: String,
-                       issuedAt: Instant?,
-                       expiresAt: Instant?,
-                       invalidated: Boolean
-    ): AbstractToken(tokenValue, issuedAt, expiresAt, invalidated)
-
+    class RefreshToken(
+        tokenValue: String,
+        issuedAt: Instant?,
+        expiresAt: Instant?,
+        invalidated: Boolean,
+    ) : AbstractToken(tokenValue, issuedAt, expiresAt, invalidated)
 }

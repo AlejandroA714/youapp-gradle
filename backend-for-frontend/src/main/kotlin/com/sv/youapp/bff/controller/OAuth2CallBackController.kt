@@ -19,7 +19,7 @@ class OAuth2CallBackController(private val tokenExchangeService: TokenExchangeSe
                   @RequestParam("state") state: String,
                   res: ServerHttpResponse): Mono<Void> {
         return tokenExchangeService.exchange(code).flatMap {
-            System.out.println("HHHH")
+            println("HHHH")
             redirect(res, "youapp://oauth2?sid=$code")
         }
     }
@@ -30,11 +30,11 @@ class OAuth2CallBackController(private val tokenExchangeService: TokenExchangeSe
         val q = listOf(
             "response_type=code",
             "client_id=oidc-client",
-            "redirect_uri=http://192.168.1.60:8083/oauth2/callback",
+            "redirect_uri=http://192.168.1.24:8083/oauth2/callback",
             "scope=profile",
             "state=asd123sad" // ← state = sid generado por el BFF
         ).joinToString("&")
-        return redirect(res,"http://192.168.1.60:8082/oauth2/authorize?$q")
+        return redirect(res,"http://192.168.1.24:8082/oauth2/authorize?$q")
     }
 
     private fun redirect(

@@ -13,7 +13,6 @@ import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import java.time.Duration
 
-
 @Entity
 @Table(name = "token_settings")
 class TokenSettingsEntity(
@@ -33,7 +32,7 @@ class TokenSettingsEntity(
     var reuseRefreshTokens: Boolean,
     @Column(nullable = false, length = 32)
     var accessTokenFormat: String,
-){
+) {
     @Converter
     class DurationSecondsConverter : AttributeConverter<Duration?, Int?> {
         override fun convertToDatabaseColumn(duration: Duration?): Int? {
@@ -45,5 +44,3 @@ class TokenSettingsEntity(
         }
     }
 }
-
-

@@ -12,5 +12,5 @@ abstract class UserDTOMixin(
     @JsonProperty("profilePictureUrl") val profilePictureUrl: String?,
     @JsonProperty("registeredAt") val registeredAt: Instant,
     @JsonProperty("authorities") val authorities: Set<GrantedAuthority>,
-    @JsonProperty("isEnabled") val enabled: Boolean
+    @JsonProperty("isEnabled") val enabled: Boolean,
 )

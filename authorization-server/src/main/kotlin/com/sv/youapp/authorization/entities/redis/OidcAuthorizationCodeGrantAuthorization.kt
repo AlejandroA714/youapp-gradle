@@ -8,17 +8,20 @@ class OidcAuthorizationCodeGrantAuthorization(
     id: String?,
     registeredClientId: String?,
     principalName: String,
-    authorizedScopes: MutableSet<String?>?,
+    scopes: String,
     accessToken: AccessToken?,
     refreshToken: RefreshToken?,
     principal: Principal?,
     authorizationRequest: OAuth2AuthorizationRequest?,
     authorizationCode: AuthorizationCode?,
     state: String?,
-    val idToken: IdToken?
-): OAuth2AuthorizationCodeGrantAuthorization(id, registeredClientId,principalName,authorizedScopes, accessToken, refreshToken, principal, authorizationRequest,authorizationCode, state) {
-
+    val idToken: IdToken?,
+) : OAuth2AuthorizationCodeGrantAuthorization(id, registeredClientId, principalName, scopes, accessToken, refreshToken, principal, authorizationRequest, authorizationCode, state) {
     class IdToken(
-            tokenValue: String?, issuedAt: Instant?, expiresAt: Instant?, invalidated: Boolean,
-            val claims: ClaimsHolder?) : AbstractToken(tokenValue, issuedAt, expiresAt, invalidated)
+        tokenValue: String?,
+        issuedAt: Instant?,
+        expiresAt: Instant?,
+        invalidated: Boolean,
+        val claims: ClaimsHolder?,
+    ) : AbstractToken(tokenValue, issuedAt, expiresAt, invalidated)
 }
