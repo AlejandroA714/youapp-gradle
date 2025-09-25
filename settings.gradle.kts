@@ -1,13 +1,4 @@
-rootProject.name = "platform-instances"
+rootProject.name = "backend"
 
-include(":api-gateway")
-include(":authorization-server")
-include(":backend-for-frontend")
-
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
-        mavenCentral()
-    }
-}
+includeBuild("bom")
+includeBuild("platform-instances")

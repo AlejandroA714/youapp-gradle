@@ -39,7 +39,19 @@ services:
       - youapp-net
     ports:
       - "6379:6379"
+  redis-insight:
+    image: redis/redisinsight:2.70
+    container_name: redis-insight
+    depends_on:
+      - redis
+    ports:
+      - "5540:5540"
+    volumes:
+      - redisinsight_data:/data
+    networks:
+      - youapp-net
 
 volumes:
   mysql_data:
   redis_data:
+  redisinsight_data:
