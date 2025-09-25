@@ -5,8 +5,8 @@ import java.security.Principal
 import java.time.Instant
 
 class OidcAuthorizationCodeGrantAuthorization(
-    id: String?,
-    registeredClientId: String?,
+    id: String,
+    registeredClientId: String,
     principalName: String,
     scopes: String,
     accessToken: AccessToken?,

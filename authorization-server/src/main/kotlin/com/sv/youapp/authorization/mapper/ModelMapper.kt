@@ -189,11 +189,11 @@ fun mapIdToken(
             idToken.tokenValue,
             idToken.issuedAt,
             idToken.expiresAt,
-            idToken.claims!!.sanitizeClaims(),
+            idToken.claims?.claims,
         )
     builder.token(oidcIdToken) { metadata: MutableMap<String?, Any?>? ->
         metadata!![OAuth2Authorization.Token.INVALIDATED_METADATA_NAME] = idToken.invalidated
-        metadata[OAuth2Authorization.Token.CLAIMS_METADATA_NAME] = idToken.claims.sanitizeClaims()
+        metadata[OAuth2Authorization.Token.CLAIMS_METADATA_NAME] = idToken.claims?.claims
     }
 }
 
@@ -201,8 +201,11 @@ fun mapOAuth2AuthorizationCodeGrantAuthorization(
     authorizationCodeGrantAuthorization: OAuth2AuthorizationCodeGrantAuthorization,
     builder: OAuth2Authorization.Builder,
 ) {
-    // val request: OAuth2AuthorizationRequest? = authorizationCodeGrantAuthorization.authorizationRequest?.mapToOAuth2AuthorizationServer()
-
+    val req: OAuth2AuthorizationRequest? = authorizationCodeGrantAuthorization.authorizationRequest
+    val safeReq = OAuth2AuthorizationRequest.from(req)
+        .attributes(req?.attributes ?: emptyMap())
+        .additionalParameters(req?.additionalParameters ?: emptyMap())
+        .build()
     builder.id(authorizationCodeGrantAuthorization.id)
         .principalName(authorizationCodeGrantAuthorization.principalName)
         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
@@ -210,7 +213,7 @@ fun mapOAuth2AuthorizationCodeGrantAuthorization(
         .attribute(Principal::class.java.getName(), authorizationCodeGrantAuthorization.principal)
         .attribute(
             OAuth2AuthorizationRequest::class.java.getName(),
-            authorizationCodeGrantAuthorization.authorizationRequest,
+                safeReq,
         )
     if (StringUtils.hasText(authorizationCodeGrantAuthorization.state)) {
         builder.attribute(OAuth2ParameterNames.STATE, authorizationCodeGrantAuthorization.state)
@@ -274,7 +277,7 @@ fun mapAccessToken(
         )
     builder.token(oauth2AccessToken) { metadata: MutableMap<String?, Any?>? ->
         metadata!![OAuth2Authorization.Token.INVALIDATED_METADATA_NAME] = accessToken.invalidated
-        metadata[OAuth2Authorization.Token.CLAIMS_METADATA_NAME] = accessToken.claims?.sanitizeClaims()
+        metadata[OAuth2Authorization.Token.CLAIMS_METADATA_NAME] = accessToken.claims?.claims
         metadata[OAuth2TokenFormat::class.java.getName()] = accessToken.tokenFormat?.value
     }
 }

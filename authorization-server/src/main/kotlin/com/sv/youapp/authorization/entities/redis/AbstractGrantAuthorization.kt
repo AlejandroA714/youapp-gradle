@@ -10,25 +10,13 @@ import java.time.Instant
 @RedisHash("oauth2_authorization")
 abstract class AbstractGrantAuthorization(
     @Id
-    val id: String?,
-    val registeredClientId: String?,
-    val principalName: String?,
-    val scopes: String,
+    val id: String,
+    val registeredClientId: String,
+    val principalName: String,
+    val scopes: String?,
     val accessToken: AccessToken?,
     val refreshToken: RefreshToken?,
 ) {
-    class ClaimsHolder(private val claims: Map<String, Any?>?) {
-        fun sanitizeClaims(): Map<String?, Any?>? {
-            return this.claims?.mapValues { (_, value) ->
-                when (value) {
-                    is List<*> -> ArrayList(value)
-                    is Set<*> -> LinkedHashSet(value)
-                    is Map<*, *> -> LinkedHashMap(value)
-                    else -> value
-                }
-            }
-        }
-    }
 
     abstract class AbstractToken(
         @Indexed
@@ -55,4 +43,6 @@ abstract class AbstractGrantAuthorization(
         expiresAt: Instant?,
         invalidated: Boolean,
     ) : AbstractToken(tokenValue, issuedAt, expiresAt, invalidated)
+
+    class ClaimsHolder(val claims: Map<String, Any?>?)
 }

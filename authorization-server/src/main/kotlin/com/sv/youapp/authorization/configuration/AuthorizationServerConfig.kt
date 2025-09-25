@@ -1,5 +1,7 @@
 package com.sv.youapp.authorization.configuration
 
+import com.fasterxml.jackson.annotation.JsonSetter
+import com.fasterxml.jackson.annotation.Nulls
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.sv.youapp.authorization.converter.BytesToUsernamePasswordAuthenticationTokenConverter
@@ -85,6 +87,10 @@ class AuthorizationServerConfig {
         objectMapper.registerModules(SecurityJackson2Modules.getModules(javaClass.getClassLoader()))
         objectMapper.addMixIn(UserDTO::class.java, UserDTOMixin::class.java)
         objectMapper.registerModule(OAuth2AuthorizationServerJackson2Module())
+        objectMapper.configOverride(Map::class.java)
+            .setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY))
+        objectMapper.configOverride(MutableCollection::class.java)
+            .setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY))
         val serializer =
             Jackson2JsonRedisSerializer(objectMapper, UsernamePasswordAuthenticationToken::class.java)
         return RedisCustomConversions(

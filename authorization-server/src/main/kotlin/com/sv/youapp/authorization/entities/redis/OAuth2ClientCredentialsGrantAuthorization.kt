@@ -1,8 +1,8 @@
 package com.sv.youapp.authorization.entities.redis
 
 class OAuth2ClientCredentialsGrantAuthorization(
-    id: String?,
-    registeredClientId: String?,
+    id: String,
+    registeredClientId: String,
     principalName: String,
     scopes: String,
     accessToken: AccessToken?,

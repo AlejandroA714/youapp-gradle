@@ -2,6 +2,7 @@ package com.sv.youapp.authorization.dto
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonIgnore
+import org.springframework.security.core.CredentialsContainer
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.time.Instant
@@ -9,14 +10,14 @@ import java.time.Instant
 class UserDTO(
     val id: Integer,
     private val username: String,
-    private val password: String?,
+    private var password: String?,
     val email: String,
     val profilePictureUrl: String?,
     val registeredAt: Instant,
     private val authorities: Set<GrantedAuthority>,
     @JsonAlias("isEnabled")
     private val enabled: Boolean,
-) : UserDetails {
+) : UserDetails, CredentialsContainer {
     override fun isEnabled() = enabled
 
     override fun getUsername(): String = username
@@ -33,4 +34,8 @@ class UserDTO(
 
     @JsonIgnore
     override fun isCredentialsNonExpired() = true
+
+    override fun eraseCredentials() {
+        password = null
+    }
 }
