@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.data.redis.connection.RedisConnectionFactory
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.core.convert.RedisCustomConversions
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories
@@ -28,6 +29,7 @@ import org.springframework.security.jackson2.SecurityJackson2Modules
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository
 import org.springframework.security.oauth2.server.authorization.jackson2.OAuth2AuthorizationServerJackson2Module
+
 
 @Configuration
 @Profile("jdbc")
@@ -43,6 +45,12 @@ class AuthorizationServerConfig {
     fun registeredClientRepository(client: ClientRepository): RegisteredClientRepository {
         return JpaRegisteredClientRepository(client)
     }
+
+    @Bean
+    fun redisConnectionFactory(): RedisConnectionFactory {
+        return JedisConnectionFactory()
+    }
+
 
     @Bean
     fun redisTemplate(
@@ -62,8 +70,14 @@ class AuthorizationServerConfig {
         return template
     }
 
+//    @Bean
+//    fun objectMapper(): ObjectMapper {
+//
+//        return objectMapper
+//    }
+
     @Bean
-    fun objectMapper(): ObjectMapper {
+    fun redisCustomConversions(): RedisCustomConversions {
         val objectMapper =
             ObjectMapper()
                 .registerKotlinModule()
@@ -71,21 +85,12 @@ class AuthorizationServerConfig {
         objectMapper.registerModules(SecurityJackson2Modules.getModules(javaClass.getClassLoader()))
         objectMapper.addMixIn(UserDTO::class.java, UserDTOMixin::class.java)
         objectMapper.registerModule(OAuth2AuthorizationServerJackson2Module())
-        return objectMapper
-    }
-
-    @Bean
-    fun redisCustomConversions(objectMapper: ObjectMapper): RedisCustomConversions {
         val serializer =
             Jackson2JsonRedisSerializer(objectMapper, UsernamePasswordAuthenticationToken::class.java)
-        // val see =
-        //      Jackson2JsonRedisSerializer(objectMapper, OAuth2AuthorizationRequest::class.java)
         return RedisCustomConversions(
             listOf<Any?>(
                 UsernamePasswordAuthenticationTokenToBytesConverter(serializer),
                 BytesToUsernamePasswordAuthenticationTokenConverter(serializer),
-                // OAuth2AuthorizationRequestToBytesConverter(see),
-                // BytesToOAuth2AuthorizationRequestConverter(see)
             ),
         )
     }
