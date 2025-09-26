@@ -17,7 +17,6 @@ abstract class AbstractGrantAuthorization(
     val accessToken: AccessToken?,
     val refreshToken: RefreshToken?,
 ) {
-
     abstract class AbstractToken(
         @Indexed
         val tokenValue: String?,

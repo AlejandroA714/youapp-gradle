@@ -202,10 +202,11 @@ fun mapOAuth2AuthorizationCodeGrantAuthorization(
     builder: OAuth2Authorization.Builder,
 ) {
     val req: OAuth2AuthorizationRequest? = authorizationCodeGrantAuthorization.authorizationRequest
-    val safeReq = OAuth2AuthorizationRequest.from(req)
-        .attributes(req?.attributes ?: emptyMap())
-        .additionalParameters(req?.additionalParameters ?: emptyMap())
-        .build()
+    val safeReq =
+        OAuth2AuthorizationRequest.from(req)
+            .attributes(req?.attributes ?: emptyMap())
+            .additionalParameters(req?.additionalParameters ?: emptyMap())
+            .build()
     builder.id(authorizationCodeGrantAuthorization.id)
         .principalName(authorizationCodeGrantAuthorization.principalName)
         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
@@ -213,7 +214,7 @@ fun mapOAuth2AuthorizationCodeGrantAuthorization(
         .attribute(Principal::class.java.getName(), authorizationCodeGrantAuthorization.principal)
         .attribute(
             OAuth2AuthorizationRequest::class.java.getName(),
-                safeReq,
+            safeReq,
         )
     if (StringUtils.hasText(authorizationCodeGrantAuthorization.state)) {
         builder.attribute(OAuth2ParameterNames.STATE, authorizationCodeGrantAuthorization.state)

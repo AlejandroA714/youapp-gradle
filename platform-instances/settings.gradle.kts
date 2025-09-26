@@ -5,8 +5,8 @@ include(":authorization-server")
 include(":backend-for-frontend")
 
 pluginManagement {
+    includeBuild("../bom/build-logic")
     repositories {
-        mavenLocal()
         gradlePluginPortal()
         mavenCentral()
     }

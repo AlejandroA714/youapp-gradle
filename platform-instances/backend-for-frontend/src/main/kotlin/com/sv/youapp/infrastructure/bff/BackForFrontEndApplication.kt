@@ -1,4 +1,4 @@
-package com.sv.youapp.bff
+package com.sv.youapp.infrastructure.bff
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

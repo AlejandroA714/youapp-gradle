@@ -32,7 +32,6 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository
 import org.springframework.security.oauth2.server.authorization.jackson2.OAuth2AuthorizationServerJackson2Module
 
-
 @Configuration
 @Profile("jdbc")
 @EnableRedisRepositories("com.sv.youapp.authorization.repositories.redis")
@@ -52,7 +51,6 @@ class AuthorizationServerConfig {
     fun redisConnectionFactory(): RedisConnectionFactory {
         return JedisConnectionFactory()
     }
-
 
     @Bean
     fun redisTemplate(

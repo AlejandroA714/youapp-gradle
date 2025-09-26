@@ -1,4 +1,4 @@
-package com.sv.youapp.bff.controller
+package com.sv.youapp.infrastructure.bff.controller
 
 import com.sv.youapp.bff.services.TokenExchangeService
 import org.springframework.http.HttpStatus

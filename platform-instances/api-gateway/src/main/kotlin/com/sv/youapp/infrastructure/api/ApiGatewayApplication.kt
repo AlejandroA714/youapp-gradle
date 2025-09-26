@@ -1,4 +1,4 @@
-package com.sv.youapp.api
+package com.sv.youapp.infrastructure.api
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class ApiGatewayApplication
 
 fun main(args: Array<String>) {
-    runApplication<ApiGatewayApplication>(*args)
+    runApplication<com.sv.youapp.infrastructure.api.ApiGatewayApplication>(*args)
 }

@@ -18,7 +18,6 @@ open class OAuth2AuthorizationCodeGrantAuthorization(
     @Indexed
     val state: String?,
 ) : AbstractGrantAuthorization(id, registeredClientId, principalName, scopes, accessToken, refreshToken) {
-
     class AuthorizationCode(tokenValue: String?, issuedAt: Instant?, expiresAt: Instant?, invalidated: Boolean) :
         AbstractToken(tokenValue, issuedAt, expiresAt, invalidated)
 }

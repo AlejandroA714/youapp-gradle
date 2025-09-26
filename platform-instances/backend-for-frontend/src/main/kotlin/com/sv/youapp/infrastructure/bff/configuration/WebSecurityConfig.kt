@@ -1,4 +1,4 @@
-package com.sv.youapp.bff.configuration
+package com.sv.youapp.infrastructure.bff.configuration
 
 import com.sv.youapp.bff.services.TokenExchangeService
 import com.sv.youapp.bff.services.impl.DefaultTokenExchangeService

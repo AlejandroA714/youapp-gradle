@@ -6,7 +6,7 @@ plugins {
     kotlin("plugin.spring") version "1.9.25" apply false
     id("org.springframework.boot") version "3.5.5" apply false
     id("com.google.cloud.tools.jib") version "3.4.5" apply false
-    id("com.sv.youapp.infrastructure.formatter") version "1.0.0-SNAPSHOT" apply false
+    id("com.sv.youapp.infrastructure.formatter") apply false
 }
 
 allprojects {
@@ -32,7 +32,7 @@ subprojects {
         }
     }
     dependencies{
-        implementation(platform("com.sv.youapp.infrastructure:bom:1.0.0-SNAPSHOT"))
+        implementation(platform("com.sv.youapp.infrastructure:bom"))
         implementation("org.springframework.boot:spring-boot-starter-webflux"){
             exclude(group = "org.springframework.boot", module = "spring-boot-starter-reactor-netty")
         }

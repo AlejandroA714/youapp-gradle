@@ -1,4 +1,4 @@
-package com.sv.youapp.bff.services.impl
+package com.sv.youapp.infrastructure.bff.services.impl
 
 import com.sv.youapp.bff.services.TokenExchangeService
 import org.springframework.http.HttpHeaders

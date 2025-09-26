@@ -1,11 +1,11 @@
-package com.sv.youapp.formatter
+package com.sv.youapp.infrastructure.formatter
 
-import org.gradle.api.Project
-import com.diffplug.gradle.spotless.SpotlessExtension
-import org.gradle.api.Plugin
+import com.diffplug.gradle.spotless.FormatExtension
 import com.diffplug.gradle.spotless.KotlinExtension
 import com.diffplug.gradle.spotless.KotlinGradleExtension
-import com.diffplug.gradle.spotless.FormatExtension
+import com.diffplug.gradle.spotless.SpotlessExtension
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 
 class FormatterPlugin : Plugin<Project> {
     override fun apply(target: Project) {
