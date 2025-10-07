@@ -1,4 +1,4 @@
-package com.sv.youapp.infrastructure.bff.controller
+package com.sv.youapp.bff.controller
 
 import com.sv.youapp.bff.services.TokenExchangeService
 import org.springframework.http.HttpStatus
@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
+import java.net.URI
 
 @RestController
 @RequestMapping("/oauth2")
@@ -42,7 +43,7 @@ class OAuth2CallBackController(private val tokenExchangeService: TokenExchangeSe
         url: String,
     ): Mono<Void> {
         res.statusCode = HttpStatus.FOUND
-        res.headers.location = java.net.URI.create(url)
+        res.headers.location = URI.create(url)
         res.headers.add("Cache-Control", "no-store")
         return res.setComplete()
     }

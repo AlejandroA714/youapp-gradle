@@ -1,11 +1,11 @@
-package com.sv.youapp.infrastructure.bff
+package com.sv.youapp.bff
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration
 import org.springframework.boot.runApplication
 
-
 @SpringBootApplication(    exclude = [
-    org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration::class
+    ReactiveUserDetailsServiceAutoConfiguration::class
 ])
 class BackForFrontEndApplication
 

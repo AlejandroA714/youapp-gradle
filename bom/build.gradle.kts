@@ -1,26 +1,20 @@
 plugins {
-    `java-platform`
-    `maven-publish`
+    alias(libs.plugins.platform)
+    alias(libs.plugins.publish)
 }
+
+group = "com.sv.youapp.infrastructure"
+version = libs.versions.global.get()
 
 javaPlatform {
     allowDependencies()
 }
 
-allprojects{
-    group = "com.sv.youapp.infrastructure"
-    version = "1.0.0-SNAPSHOT"
-    apply(plugin = "maven-publish")
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
-    }
-}
-
 dependencies {
     api(platform(libs.spring.boot.dependencies))
+    api(platform (libs.junit.bom))
     constraints {
-        api(libs.spring.authorization)
+        api(libs.spring.authorization.server)
     }
 }
 
@@ -28,7 +22,7 @@ publishing {
     publications {
         create<MavenPublication>("bom") {
             from(components["javaPlatform"])
-            artifactId = "bom"
+            artifactId = project.name
         }
     }
 }

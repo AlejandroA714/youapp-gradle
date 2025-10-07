@@ -2,29 +2,24 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 plugins {
-    kotlin("jvm") version "2.2.0"
-    kotlin("plugin.spring") version "1.9.25" apply false
-    id("org.springframework.boot") version "3.5.5" apply false
-    id("com.google.cloud.tools.jib") version "3.4.5" apply false
-    id("com.sv.youapp.infrastructure.formatter") apply false
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.spring) apply false
+    alias(libs.plugins.spring.boot)  apply false
+    alias(libs.plugins.tools.jib) apply false
 }
 
 allprojects {
     group = "com.sv.youapp.services"
-    version = "1.0.3-SNAPSHOT"
-    repositories {
-        mavenLocal()
-        mavenCentral()
-    }
+    version = rootProject.libs.versions.global
 }
 
 subprojects {
-    apply(plugin = "maven-publish")
-    apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "org.springframework.boot")
-    apply(plugin = "com.google.cloud.tools.jib")
-    apply(plugin = "org.jetbrains.kotlin.plugin.spring")
-    apply(plugin = "com.sv.youapp.infrastructure.formatter")
+    //pluginManager.apply(rootProject.libs.plugins.formatter.get().pluginId)
+    pluginManager.apply(rootProject.libs.plugins.publish.get().pluginId)
+    pluginManager.apply(rootProject.libs.plugins.kotlin.jvm.get().pluginId)
+    pluginManager.apply(rootProject.libs.plugins.kotlin.spring.get().pluginId)
+    pluginManager.apply(rootProject.libs.plugins.spring.boot.get().pluginId)
+    pluginManager.apply(rootProject.libs.plugins.tools.jib.get().pluginId)
     kotlin {
         jvmToolchain(21)
         compilerOptions {
@@ -32,12 +27,7 @@ subprojects {
         }
     }
     dependencies{
-        implementation(platform("com.sv.youapp.infrastructure:bom"))
-        implementation("org.springframework.boot:spring-boot-starter-webflux"){
-            exclude(group = "org.springframework.boot", module = "spring-boot-starter-reactor-netty")
-        }
-        implementation("org.springframework.boot:spring-boot-starter-actuator")
-        implementation("org.springframework.boot:spring-boot-starter-undertow")
+        implementation(platform(rootProject.libs.bom))
     }
 
     extensions.configure<PublishingExtension>("publishing") {
@@ -50,7 +40,7 @@ subprojects {
 
     extensions.configure(com.google.cloud.tools.jib.gradle.JibExtension::class.java) {
         from {
-            image = "alejandroa714/zulu-alpine-java:21.0.8-jdk-headless"
+            image = rootProject.libs.versions.image.get()
             platforms {
                 platform { architecture = "arm64"; os = "linux" }
                 platform { architecture = "amd64"; os = "linux" }

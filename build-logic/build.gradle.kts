@@ -1,22 +1,17 @@
 plugins {
-    kotlin("jvm") version "2.2.0"
-    `java-gradle-plugin`
-}
-
-repositories {
-    mavenLocal()
-    gradlePluginPortal()
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.java.gradle)
 }
 
 dependencies {
-    implementation("com.diffplug.spotless:spotless-plugin-gradle:6.25.0")
+    implementation(libs.spotless)
 }
 
 kotlin {
     jvmToolchain(21)
 }
 group = "com.sv.youapp.infrastructure"
-version = "1.0.3-SNAPSHOT"
+version = libs.versions.global.get()
 
 gradlePlugin {
     plugins {
