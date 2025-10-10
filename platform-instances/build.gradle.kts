@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.spring) apply false
     alias(libs.plugins.spring.boot)  apply false
     alias(libs.plugins.tools.jib) apply false
+    alias(libs.plugins.formatter) apply false
 }
 
 allprojects {
@@ -14,7 +15,7 @@ allprojects {
 }
 
 subprojects {
-    //pluginManager.apply(rootProject.libs.plugins.formatter.get().pluginId)
+    pluginManager.apply(rootProject.libs.plugins.formatter.get().pluginId)
     pluginManager.apply(rootProject.libs.plugins.publish.get().pluginId)
     pluginManager.apply(rootProject.libs.plugins.kotlin.jvm.get().pluginId)
     pluginManager.apply(rootProject.libs.plugins.kotlin.spring.get().pluginId)
