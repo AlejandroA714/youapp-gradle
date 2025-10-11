@@ -1,8 +1,0 @@
-package com.sv.youapp.authorization.services
-
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.userdetails.UserDetails
-
-interface AuthenticationService {
-    fun authenticate(authentication: Authentication): UserDetails
-}

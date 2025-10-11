@@ -1,0 +1,46 @@
+package com.sv.youapp.common.authorization.authentication
+
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.oauth2.core.AuthorizationGrantType
+
+val NATIVE_GRANT_TYPE = AuthorizationGrantType("urn:ietf:params:oauth:grant-type:native")
+
+class NativeAuthentication(
+    var username: String,
+    val password: String,
+    val clientPrincipal: Authentication,
+    val state: String?,
+    val scopes: Set<GrantedAuthority>,
+    var granted: Set<GrantedAuthority>?,
+) : Authentication {
+    private var auth = false
+
+    override fun getAuthorities(): Set<GrantedAuthority>? {
+        return granted
+    }
+
+    override fun getCredentials(): Any {
+        return password
+    }
+
+    override fun getDetails(): Any? {
+        return null
+    }
+
+    override fun getPrincipal(): Any {
+        return username
+    }
+
+    override fun isAuthenticated(): Boolean {
+        return auth
+    }
+
+    override fun setAuthenticated(isAuthenticated: Boolean) {
+        auth = isAuthenticated
+    }
+
+    override fun getName(): String {
+        return username
+    }
+}

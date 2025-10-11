@@ -5,9 +5,10 @@ plugins {
 }
 
 allprojects {
-    group = "com.sv.youapp.component"
+    group = "com.sv.youapp.common"
     version = rootProject.libs.versions.global.get()
 }
+
 
 subprojects {
     pluginManager.apply(rootProject.libs.plugins.formatter.get().pluginId)

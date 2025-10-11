@@ -10,7 +10,7 @@ plugins {
 }
 
 allprojects {
-    group = "com.sv.youapp.services"
+    group = "com.sv.youapp.service"
     version = rootProject.libs.versions.global
 }
 

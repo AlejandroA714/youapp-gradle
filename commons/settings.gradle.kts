@@ -1,6 +1,6 @@
-rootProject.name = "components"
+rootProject.name = "commons"
 
-include(":native-grant-component")
+include(":authorization-commons")
 
 dependencyResolutionManagement {
     repositories {

@@ -14,5 +14,6 @@ dependencies {
     implementation("redis.clients:jedis")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.springframework.security:spring-security-oauth2-authorization-server")
+    implementation("com.sv.youapp.common:authorization-commons")
     runtimeOnly("com.mysql:mysql-connector-j")
 }
