@@ -1,6 +1,8 @@
 rootProject.name = "components"
 
 include(":native-grant-component")
+include(":redis-handling-session")
+include(":jpa-handling-session")
 
 dependencyResolutionManagement {
     repositories {

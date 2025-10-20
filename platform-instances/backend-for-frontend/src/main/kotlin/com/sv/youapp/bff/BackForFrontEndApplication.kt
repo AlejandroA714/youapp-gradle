@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDeta
 import org.springframework.boot.runApplication
 
 @SpringBootApplication(    exclude = [
-    ReactiveUserDetailsServiceAutoConfiguration::class
+   // ReactiveUserDetailsServiceAutoConfiguration::class
 ])
 class BackForFrontEndApplication
 

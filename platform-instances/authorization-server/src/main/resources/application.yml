@@ -1,8 +1,36 @@
 server:
   port: 8082
 spring:
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  security:
+    user:
+      name: admin
+      password: "{bcrypt}$2a$12$6W2eWv2O.CD.A9FKU.uV5Oug7b5A2cN1Grk121QlkjlGLN6ntPgd2"
+    oauth2:
+      authorizationserver:
+        issuer: https://auth.ejemplo.com
+        client:
+          oidc-client:
+            registration:
+              client-id: oidc-client
+              client-secret: "{bcrypt}$2a$12$UTyUdohZDTQwMF3wDLmvrumfVetNGp/50/HmtnZoF8x531pYDOw5u"
+              client-authentication-methods:
+                - client_secret_basic
+              scopes:
+                - openid
+              authorization-grant-types:
+                - authorization_code
+                - urn:ietf:params:oauth:grant-type:native
+                - refresh_token
+              redirect-uris:
+                - http://192.168.1.24:8081/oauth2/callback
+                - https://oidcdebugger.com/debug
+            require-authorization-consent: false
+            require-proof-key: false
+            token:
+              access-token-time-to-live: 16h
+              refresh-token-time-to-live: 30d
+              reuse-refresh-tokens: false
+              access-token-format: self-contained
 logging:
   level:
     org.springframework.security: TRACE
