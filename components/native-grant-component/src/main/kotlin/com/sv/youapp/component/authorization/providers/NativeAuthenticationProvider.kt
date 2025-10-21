@@ -2,7 +2,7 @@ package com.sv.youapp.component.authorization.providers
 
 import com.sv.youapp.common.authorization.authentication.NATIVE_GRANT_TYPE
 import com.sv.youapp.common.authorization.authentication.NativeAuthentication
-import com.sv.youapp.common.authorization.services.AuthenticationService
+import com.sv.youapp.common.authorization.services.NativeAuthenticationService
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
@@ -28,8 +28,8 @@ import java.util.Collections
 
 class NativeAuthenticationProvider(
     private val authorizationService: OAuth2AuthorizationService,
-    private val tokenGenerator: OAuth2TokenGenerator<OAuth2Token>,
-    private val authenticationService: AuthenticationService,
+    private val tokenGenerator: OAuth2TokenGenerator<out OAuth2Token>,
+    private val nativeAuthenticationService: NativeAuthenticationService,
 ) : AuthenticationProvider {
     override fun authenticate(authentication: Authentication?): Authentication {
         val nativeAuthentication: NativeAuthentication =
@@ -42,7 +42,7 @@ class NativeAuthenticationProvider(
             throw OAuth2AuthenticationException(OAuth2ErrorCodes.UNAUTHORIZED_CLIENT)
         }
         // DO NECESSARY STUFF, GET FROM DB, GET ROLES, AND PUT IN
-        val user: UserDetails = authenticationService.authenticate(authentication)
+        val user: UserDetails = nativeAuthenticationService.authenticate(authentication)
         nativeAuthentication.granted = user.authorities.toSet()
         //
         nativeAuthentication.isAuthenticated = true
