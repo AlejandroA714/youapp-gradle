@@ -3,20 +3,20 @@ server:
 spring:
   security:
     user:
-      name: admin
-      password: "$2a$12$K13IUHuH/EUewiYy2/CRouiISN5WRVtmn2bKpPtU8ZVDgzRAX6gbK"
+      name: ${SECURITY_USERNAME}
+      password: ${SECURITY_PASSWORD}
     oauth2:
       authorizationserver:
         issuer: https://auth.ejemplo.com
         client:
           oidc-client:
             registration:
-              client-id: oidc-client
-              client-secret: "$2a$12$UTyUdohZDTQwMF3wDLmvrumfVetNGp/50/HmtnZoF8x531pYDOw5u"
+              client-id: ${CLIENT_USERNAME}
+              client-secret: ${CLIENT_SECRET}
               client-authentication-methods:
                 - client_secret_basic
-              #scopes:
-              #  - openid
+              scopes:
+                - openid
               authorization-grant-types:
                 - authorization_code
                 - urn:ietf:params:oauth:grant-type:native
