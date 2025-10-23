@@ -5,7 +5,9 @@ import com.sv.youapp.component.authorization.entities.redis.OAuth2AuthorizationC
 import com.sv.youapp.component.authorization.entities.redis.OAuth2DeviceCodeGrantAuthorization
 import com.sv.youapp.component.authorization.entities.redis.OidcAuthorizationCodeGrantAuthorization
 import org.springframework.data.repository.CrudRepository
+import org.springframework.stereotype.Repository
 
+@Repository
 @Suppress("FunctionName")
 interface OAuth2AuthorizationGrantAuthorizationRepository : CrudRepository<AbstractGrantAuthorization, String> {
     fun <T : OAuth2AuthorizationCodeGrantAuthorization?> findByState(state: String?): T?

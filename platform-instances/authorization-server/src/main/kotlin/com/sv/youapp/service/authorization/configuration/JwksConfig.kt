@@ -5,6 +5,8 @@ import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
 import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass
 import org.springframework.boot.autoconfigure.security.SecurityProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -28,8 +30,10 @@ private const val AUTHORITIES = "authorities"
 @Configuration
 class JwksConfig {
     @Configuration
+    @ConditionalOnMissingClass("jakarta.persistence.EntityManager")
     class InMemoryConfiguration {
         @Bean
+        @ConditionalOnMissingBean
         fun userDetailsService(props: SecurityProperties): UserDetailsService {
             val u = props.user
             val user =

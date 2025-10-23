@@ -1,7 +1,12 @@
+plugins {
+    alias(libs.plugins.kotlin.jpa)
+}
+
 dependencies {
-    implementation("org.springframework.data:spring-data-jpa")
+    implementation(libs.kotlin.reflect)
+    implementation(libs.mysql.connector)
+    implementation(libs.spring.core.oauth2)
+    implementation(libs.spring.boot.starter.jpa)
+    implementation(libs.spring.authorization.server)
     implementation("com.sv.youapp.common:authorization-commons")
-    implementation("org.springframework.data:spring-data-commons")
-    implementation("org.springframework.security:spring-security-oauth2-core")
-    implementation("org.springframework.security:spring-security-oauth2-authorization-server")
 }

@@ -1,9 +1,11 @@
 package com.sv.youapp.component.authorization.mapper
 
+import com.sv.youapp.common.authorization.authentication.NATIVE_GRANT_TYPE
 import com.sv.youapp.component.authorization.entities.redis.AbstractGrantAuthorization
 import com.sv.youapp.component.authorization.entities.redis.OAuth2AuthorizationCodeGrantAuthorization
 import com.sv.youapp.component.authorization.entities.redis.OAuth2ClientCredentialsGrantAuthorization
 import com.sv.youapp.component.authorization.entities.redis.OAuth2DeviceCodeGrantAuthorization
+import com.sv.youapp.component.authorization.entities.redis.OAuth2NativeGrantAuthorization
 import com.sv.youapp.component.authorization.entities.redis.OAuth2TokenExchangeGrantAuthorization
 import com.sv.youapp.component.authorization.entities.redis.OidcAuthorizationCodeGrantAuthorization
 import org.springframework.security.oauth2.core.AuthorizationGrantType
@@ -40,9 +42,23 @@ fun convertOAuth2AuthorizationGrantAuthorization(authorization: OAuth2Authorizat
         return convertOAuth2DeviceCodeGrantAuthorization(authorization)
     } else if (AuthorizationGrantType.TOKEN_EXCHANGE == authorization.authorizationGrantType) {
         return convertOAuth2TokenExchangeGrantAuthorization(authorization)
+    } else if (NATIVE_GRANT_TYPE == authorization.authorizationGrantType) {
+        return convertOAuth2NativeGrantAuthorization(authorization)
     }
-    // TODO: NATIVE NO SUPPORTED
     return null
+}
+
+fun convertOAuth2NativeGrantAuthorization(authorization: OAuth2Authorization): OAuth2NativeGrantAuthorization {
+    val refreshToken: AbstractGrantAuthorization.RefreshToken? = extractRefreshToken(authorization)
+    val accessToken: AbstractGrantAuthorization.AccessToken? = extractAccessToken(authorization)
+    return OAuth2NativeGrantAuthorization(
+        authorization.id,
+        authorization.registeredClientId,
+        authorization.principalName,
+        authorization.authorizedScopes.toCsv(),
+        accessToken,
+        refreshToken,
+    )
 }
 
 fun mapOAuth2AuthorizationGrantAuthorization(
@@ -69,7 +85,25 @@ fun mapOAuth2AuthorizationGrantAuthorization(
         is OAuth2TokenExchangeGrantAuthorization -> {
             mapOAuth2TokenExchangeGrantAuthorization(authorizationGrantAuthorization, builder)
         }
+        is OAuth2NativeGrantAuthorization -> {
+            mapOAuth2NativeGrantAuthorization(authorizationGrantAuthorization, builder)
+        }
     }
+}
+
+fun mapOAuth2NativeGrantAuthorization(
+    authorizationGrantAuthorization: OAuth2NativeGrantAuthorization,
+    builder: OAuth2Authorization.Builder,
+) {
+    builder.id(authorizationGrantAuthorization.id)
+        .principalName(authorizationGrantAuthorization.principalName)
+        .authorizationGrantType(NATIVE_GRANT_TYPE)
+        .authorizedScopes(authorizationGrantAuthorization.scopes.toStringSet())
+//    if (StringUtils.hasText(authorizationCodeGrantAuthorization.state)) {
+//        builder.attribute(OAuth2ParameterNames.STATE, authorizationCodeGrantAuthorization.state)
+//    }
+    mapAccessToken(authorizationGrantAuthorization.accessToken, builder)
+    mapRefreshToken(authorizationGrantAuthorization.refreshToken, builder)
 }
 
 fun mapOAuth2TokenExchangeGrantAuthorization(

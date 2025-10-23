@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.core.OAuth2Error
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes
 import org.springframework.security.oauth2.core.OAuth2RefreshToken
 import org.springframework.security.oauth2.core.OAuth2Token
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType
@@ -41,6 +42,15 @@ class NativeAuthenticationProvider(
         if (!registeredClient.authorizationGrantTypes.contains(NATIVE_GRANT_TYPE)) {
             throw OAuth2AuthenticationException(OAuth2ErrorCodes.UNAUTHORIZED_CLIENT)
         }
+        if (!authentication.scopes.isEmpty() &&
+            !registeredClient.scopes
+                .containsAll(authentication.scopes.map { it.toString() })
+        )
+            {
+                throw OAuth2AuthenticationException(
+                    OAuth2Error(OAuth2ErrorCodes.INVALID_REQUEST, "OAuth 2.0 Parameter: " + OAuth2ParameterNames.SCOPE, null),
+                )
+            }
         // DO NECESSARY STUFF, GET FROM DB, GET ROLES, AND PUT IN
         val user: UserDetails = nativeAuthenticationService.authenticate(authentication)
         nativeAuthentication.granted = user.authorities.toSet()
@@ -110,6 +120,9 @@ class NativeAuthenticationProvider(
             }
         } else {
             authorizationBuilder.accessToken(accessToken)
+        }
+        if (refreshToken != null) {
+            authorizationBuilder.refreshToken(refreshToken)
         }
 
         val authorization = authorizationBuilder.build()

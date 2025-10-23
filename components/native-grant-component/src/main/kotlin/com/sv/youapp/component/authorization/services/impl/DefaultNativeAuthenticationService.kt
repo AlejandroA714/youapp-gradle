@@ -31,7 +31,7 @@ class DefaultNativeAuthenticationService(
         return userDetails
     }
 
-    private fun authenticationException(): OAuth2AuthenticationException  {
+    private fun authenticationException(): OAuth2AuthenticationException {
         throw OAuth2AuthenticationException(
             OAuth2Error(
                 OAuth2ErrorCodes.INVALID_GRANT,

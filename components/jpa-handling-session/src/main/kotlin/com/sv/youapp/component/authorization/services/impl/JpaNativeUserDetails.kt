@@ -8,8 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 
 class JpaNativeUserDetails(
-    private val repository:
-    UserRepository,
+    private val repository: UserRepository,
 ) : NativeUserDetails {
     override fun loadUserByUsername(username: String): UserDetails {
         val u =

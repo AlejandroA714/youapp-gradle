@@ -43,11 +43,14 @@ class NativeAuthenticationConverter : AuthenticationConverter {
         val scope = parameters.getFirst(OAuth2ParameterNames.SCOPE)
         if (StringUtils.hasText(scope) && parameters[OAuth2ParameterNames.SCOPE]!!.size != 1) {
             val error = "OAuth 2.0 Parameter: " + OAuth2ParameterNames.SCOPE
-            throw OAuth2AuthenticationException(
-                OAuth2Error(OAuth2ErrorCodes.INVALID_REQUEST, error, null),
-            )
+            throwError(error)
         }
         if (StringUtils.hasText(scope)) {
+            if (scope!!.contains(','))
+                {
+                    val error = "OAuth 2.0 Parameter: " + OAuth2ParameterNames.SCOPE + " must be space separated"
+                    throwError(error)
+                }
             scopes = HashSet(listOf(*StringUtils.delimitedListToStringArray(scope, " ")))
         }
         return NativeAuthentication(
@@ -59,9 +62,15 @@ class NativeAuthenticationConverter : AuthenticationConverter {
             null,
         )
     }
+
+    private fun throwError(message: String) {
+        throw OAuth2AuthenticationException(
+            OAuth2Error(OAuth2ErrorCodes.INVALID_REQUEST, message, null),
+        )
+    }
 }
 
-fun getParameters(request: HttpServletRequest): MultiValueMap<String?, String?> {
+private fun getParameters(request: HttpServletRequest): MultiValueMap<String?, String?> {
     val parameterMap = request.parameterMap
     val parameters: MultiValueMap<String?, String?> = LinkedMultiValueMap<String?, String?>()
     parameterMap.forEach { (key: String?, values: Array<String?>?) ->

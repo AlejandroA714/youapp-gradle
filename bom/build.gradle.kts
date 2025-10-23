@@ -15,6 +15,7 @@ dependencies {
     api(platform (libs.junit.bom))
     constraints {
         api(libs.spring.authorization.server)
+        api(libs.mysql.connector)
     }
 }
 

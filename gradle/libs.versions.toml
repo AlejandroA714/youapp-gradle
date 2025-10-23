@@ -5,19 +5,24 @@ junit = "5.10.0"
 kotlin = "2.2.20"
 global = "1.0.0-SNAPSHOT"
 image = "alejandroa714/zulu-alpine-java:21.0.8-jdk-headless"
+mysql = "9.4.0"
 
 [libraries]
 bom = { group = "com.sv.youapp.infrastructure", name = "bom"}
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit"}
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin"}
 spotless = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version = "6.25.0"}
+mysql-connector = { group = "com.mysql", name = "mysql-connector-j", version.ref = "mysql"}
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-boot-starter-jpa = {module = "org.springframework.boot:spring-boot-starter-data-jpa"}
+spring-boot-starter-redis = {module = "org.springframework.boot:spring-boot-starter-data-redis"}
+spring-boot-starter-tomcat = { module = "org.springframework.boot:spring-boot-starter-tomcat"}
 spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
 spring-boot-starter-undertow = { module = "org.springframework.boot:spring-boot-starter-undertow" }
-spring-boot-starter-tomcat = { module = "org.springframework.boot:spring-boot-starter-tomcat"}
 spring-boot-starter-oauth2 = { module = "org.springframework.boot:spring-boot-starter-oauth2-authorization-server"}
 spring-boot-dependencies = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "spring-boot" }
+spring-core-oauth2 = { group = "org.springframework.security", name = "spring-security-oauth2-core"}
 spring-authorization-server = { group = "org.springframework.security", name = "spring-security-oauth2-authorization-server" ,version.ref = "authorization"}
 
 
