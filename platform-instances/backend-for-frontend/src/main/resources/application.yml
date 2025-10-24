@@ -1,6 +1,11 @@
 server:
   port: 8083
 
+
 spring:
   main:
     web-application-type: reactive
+security:
+  oauth2:
+    URL: http://localhost:8082
+    redirect-uri: http://192.168.1.24:8083/oauth2/callback

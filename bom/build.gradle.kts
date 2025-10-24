@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.platform)
+    alias(libs.plugins.java.platform)
     alias(libs.plugins.publish)
 }
 
@@ -11,11 +11,12 @@ javaPlatform {
 }
 
 dependencies {
-    api(platform(libs.spring.boot.dependencies))
     api(platform (libs.junit.bom))
+    api(platform(libs.spring.boot.dependencies))
     constraints {
-        api(libs.spring.authorization.server)
+        api(libs.lombok)
         api(libs.mysql.connector)
+        api(libs.spring.authorization.server)
     }
 }
 

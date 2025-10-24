@@ -6,12 +6,14 @@ kotlin = "2.2.20"
 global = "1.0.0-SNAPSHOT"
 image = "alejandroa714/zulu-alpine-java:21.0.8-jdk-headless"
 mysql = "9.4.0"
+lombok = "1.18.42"
 
 [libraries]
 bom = { group = "com.sv.youapp.infrastructure", name = "bom"}
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit"}
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin"}
 spotless = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version = "6.25.0"}
+lombok = {group = "org.projectlombok", name = "lombok", version.ref = "lombok"}
 mysql-connector = { group = "com.mysql", name = "mysql-connector-j", version.ref = "mysql"}
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
 spring-boot-starter-jpa = {module = "org.springframework.boot:spring-boot-starter-data-jpa"}
@@ -39,13 +41,15 @@ web = [
 ]
 
 [plugins]
-platform = { id = "java-platform"}
+java-api = { id = "java"}
 publish = { id = "maven-publish"}
+java-library = { id = "java-library"}
+java-platform = { id = "java-platform"}
 java-gradle = { id = "java-gradle-plugin"}
 formatter = { id = "com.sv.youapp.infrastructure.formatter"}
+tools-jib = { id = "com.google.cloud.tools.jib", version = "3.4.5"}
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin"}
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot"}
-tools-jib = { id = "com.google.cloud.tools.jib", version = "3.4.5"}
-kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring" , version.ref = "kotlin"}
 kotlin-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin"}
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring" , version.ref = "kotlin"}
 

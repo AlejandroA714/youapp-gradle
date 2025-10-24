@@ -1,6 +1,5 @@
 plugins {
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.kotlin.spring) apply false
+    alias(libs.plugins.java.library)
     alias(libs.plugins.formatter) apply false
 }
 
@@ -11,17 +10,12 @@ allprojects {
 
 
 subprojects {
+    pluginManager.apply(rootProject.libs.plugins.java.library.get().pluginId)
     pluginManager.apply(rootProject.libs.plugins.formatter.get().pluginId)
     pluginManager.apply(rootProject.libs.plugins.publish.get().pluginId)
-    pluginManager.apply(rootProject.libs.plugins.kotlin.jvm.get().pluginId)
-    pluginManager.apply(rootProject.libs.plugins.kotlin.spring.get().pluginId)
-    kotlin {
-        jvmToolchain(21)
-        compilerOptions {
-            freeCompilerArgs.addAll("-Xjsr305=strict")
-        }
-    }
     dependencies{
+        compileOnly(rootProject.libs.lombok)
+        annotationProcessor(rootProject.libs.lombok)
         implementation(platform(rootProject.libs.bom))
     }
     extensions.configure<PublishingExtension>("publishing") {

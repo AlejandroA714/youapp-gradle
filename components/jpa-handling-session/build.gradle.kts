@@ -1,9 +1,4 @@
-plugins {
-    alias(libs.plugins.kotlin.jpa)
-}
-
 dependencies {
-    implementation(libs.kotlin.reflect)
     implementation(libs.mysql.connector)
     implementation(libs.spring.core.oauth2)
     implementation(libs.spring.boot.starter.jpa)
