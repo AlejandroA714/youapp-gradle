@@ -1,6 +1,9 @@
 package com.sv.youapp.bff.controller;
 
+import com.sv.youapp.bff.enums.ResponseMode;
+import com.sv.youapp.bff.enums.ResponseType;
 import com.sv.youapp.bff.services.TokenExchangeService;
+import org.apache.el.parser.Token;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,14 +39,17 @@ public class OAuth2CallBackController {
 	@GetMapping("/login")
 	@ResponseStatus(HttpStatus.FOUND)
 	public Mono<Void> login(ServerHttpResponse res) {
-		String url = String.join("&",
-			"http://192.168.1.24:8082/oauth2/authorize?response_type=code",
-			"client_id=oidc-client",
-			"redirect_uri=http://192.168.1.24:8083/oauth2/callback",
-			"scope=profile",
-			"state=asd123sad"
-		);
-		return redirect(res, url);
+		return TokenExchangeService.authorizationCodeRequest("http://localhost:8082")
+			//.request().authorizationUri("/oauth2/pruebas")
+			//.responseMode(ResponseMode.FORM_POST)
+			//.responseType(ResponseType.CODE)
+			//.scopes("profile","email")
+			.request()
+			//.oidc()
+			.redirectUri("https://oidcdebugger.com/debug")
+			.and().request()
+			.and()
+			.redirect(res);
 	}
 
 	private Mono<Void> redirect(ServerHttpResponse res, String url) {

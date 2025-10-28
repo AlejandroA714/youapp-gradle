@@ -14,6 +14,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
         return http
+
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .cors(ServerHttpSecurity.CorsSpec::disable)
             .authorizeExchange(ex -> ex.anyExchange().permitAll())
@@ -21,14 +22,11 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public WebClient webClient(WebClient.Builder builder) {
-        return builder
-            .baseUrl("http://localhost:8082")
-            .build();
-    }
-
-    @Bean
-    public TokenExchangeService tokenExchangeService(WebClient webClient) {
-        return new DefaultTokenExchangeService(webClient);
+    public TokenExchangeService tokenExchangeService() {
+//        var dd =  DefaultTokenExchangeService.builder()
+//			.web(x -> x.host("http://localhost:8084"))
+//			.build();
+		//dd.exchange("ADASDA").block();
+		return DefaultTokenExchangeService.builder().build();
     }
 }

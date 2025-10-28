@@ -1,13 +1,14 @@
 package com.sv.youapp.bff;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.runApplication;
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration;
 
 @SpringBootApplication(
-    // exclude = { ReactiveUserDetailsServiceAutoConfiguration.class }
+     exclude = { ReactiveUserDetailsServiceAutoConfiguration.class }
 )
 public class BackForFrontEndApplication {
     public static void main(String[] args) {
-        runApplication(BackForFrontEndApplication.class, args);
+        SpringApplication.run(BackForFrontEndApplication.class, args);
     }
 }
