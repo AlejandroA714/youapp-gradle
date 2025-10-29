@@ -1,5 +1,6 @@
 package com.sv.youapp.bff.configuration;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -29,4 +30,8 @@ public class WebSecurityConfig {
 		//dd.exchange("ADASDA").block();
 		return DefaultTokenExchangeService.builder().build();
     }
+
+//	@Bean
+//	public Cache<String, Object> cache() {
+//	}
 }

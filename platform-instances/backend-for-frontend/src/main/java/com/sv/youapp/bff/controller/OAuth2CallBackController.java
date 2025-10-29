@@ -39,17 +39,7 @@ public class OAuth2CallBackController {
 	@GetMapping("/login")
 	@ResponseStatus(HttpStatus.FOUND)
 	public Mono<Void> login(ServerHttpResponse res) {
-		return TokenExchangeService.authorizationCodeRequest("http://localhost:8082")
-			//.request().authorizationUri("/oauth2/pruebas")
-			//.responseMode(ResponseMode.FORM_POST)
-			//.responseType(ResponseType.CODE)
-			//.scopes("profile","email")
-			.request()
-			//.oidc()
-			.redirectUri("https://oidcdebugger.com/debug")
-			.and().request()
-			.and()
-			.redirect(res);
+		return tokenExchangeService.init(res);
 	}
 
 	private Mono<Void> redirect(ServerHttpResponse res, String url) {

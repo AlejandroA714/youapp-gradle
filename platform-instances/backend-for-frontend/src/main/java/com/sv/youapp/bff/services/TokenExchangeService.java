@@ -4,8 +4,10 @@ import com.sv.youapp.bff.enums.ResponseMode;
 import com.sv.youapp.bff.enums.ResponseType;
 import com.sv.youapp.bff.internal.DefaultAuthorizationCodeRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.web.util.UriComponents;
 import reactor.core.publisher.Mono;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -14,20 +16,10 @@ public interface TokenExchangeService {
 
     Mono<Map> exchange(String code);
 
+	Mono<Void> init(ServerHttpResponse res);
+
 	static AuthorizationCodeRequestSpec authorizationCodeRequest(String host) {
 		return new DefaultAuthorizationCodeRequest(host);
-	}
-
-	interface GrantCredentialsSpec<T> {
-		T username(String username);
-	}
-
-	 interface AuthorizationCodeSpec {
-		 AuthorizationCodeSpec code(String code);
-
-		 Mono<Void> redirect();
-
-		 Mono<String> retrieve();
 	}
 
 	/**
@@ -41,17 +33,29 @@ public interface TokenExchangeService {
 
 		AuthorizationCodeRequestSpec request(Consumer<? super RequestSpec<?>> dsl);
 
-		Mono<Void> redirect(ServerHttpResponse res);
+		AuthorizationCodeRequestSpec oidc();
+
+		AuthorizationCodeRequestSpec oidc(Consumer<OidcRequestSpec> dsl);
+
+		AuthorizationCodeRequestSpec pkce();
+
+		AuthorizationCodeRequestSpec pkce(Consumer<ProofKeyForCodeExchangeRequestSpec> dsl);
+
+		AuthorizationCodeRequestSpec clientId(String state);
+
+		AuthorizationCodeRequestSpec scope(String... scope);
+
+		AuthorizationCodeRequestSpec scopes(Set<String> scope);
+
+		UriComponents build();
 	}
 
-	/**
-	 * Represents a specification for a request in the form of a fluently configurable interface,
-	 * making it usable for constructing and customizing request configurations in a chained manner.
-	 *
-	 * @param <P> the type of the parent specification to which this request specification belongs.
-	 */
-	interface ReturnableRequestSpec<P> extends RequestSpec<ReturnableRequestSpec<P>> {
-		P and();
+	interface ProofKeyForCodeExchangeRequestSpec {
+		ProofKeyForCodeExchangeRequestSpec codeVerifier(String codeVerifier);
+	}
+
+	interface OidcRequestSpec {
+		OidcRequestSpec nonce(String nonce);
 	}
 
 	interface RequestSpec<T extends RequestSpec<T>>{
@@ -76,28 +80,24 @@ public interface TokenExchangeService {
 		T redirectUri(String redirectUri);
 
 		/**
-		 * Sets the scopes for the authorization request. Scopes represent the specific
-		 * permissions or access levels that the client application is requesting from the
-		 * resource owner. A scope is typically associated with a certain set of operations
-		 * or a subset of information the client is allowed to access.
+		 * Sets the scopes to be included in the authorization request. Scopes define the level
+		 * of access that the client application is requesting from the resource owner.
 		 *
-		 * @param scope an array of strings, each representing an individual scope to include
-		 *              in the authorization request
-		 * @return the current {@code RedirectSpec} instance
+		 * @param scope one or more scopes to be requested during the authorization process
+		 * @return the current instance of the request specification
 		 */
-		T scopes(String... scope);
+		T scope(String... scope);
 
 		/**
-		 * Sets the scopes for the authorization request. Scopes represent the specific
-		 * resources and permissions that the client application is requesting access to.
+		 * Sets the scopes for the authorization request. Scopes define the permissions and level of access
+		 * that the client application is requesting from the resource owner. This method allows setting multiple scopes
+		 * in the form of a {@code Set}.
 		 *
-		 * @param scopes a collection of strings, each representing an individual scope to include
-		 *               in the authorization request
-		 * @return the current {@code RedirectSpec} instance
+		 * @param scope a {@code Set} of scope strings to be included in the authorization request
+		 * @return the instance of the current object
 		 */
-		T scopes(Set<String> scopes);
+		T scopes(Set<String> scope);
 
-		//TODO: EVALUATE
 		/**
 		 * Sets the response type for the redirect request. The response type determines the authorization response
 		 * flow to be used, such as returning an authorization code, token, or ID token.
@@ -117,23 +117,39 @@ public interface TokenExchangeService {
 		T responseMode(ResponseMode mode);
 
 		/**
-		 * Configures the authorization request to use OpenID Connect (OIDC).
-		 * This method indicates that the client application is performing an
-		 * OpenID Connect-based authorization flow, typically involving the
-		 * retrieval of ID tokens and/or user info from the authorization server.
+		 * Configures the code challenge mechanism for a request. The code challenge is
+		 * part of the PKCE (Proof Key for Code Exchange) protocol, which enhances the
+		 * security of OAuth 2.0 authorization code flows by adding an additional
+		 * verification layer during token exchange. This method typically sets or
+		 * enables the code challenge value, which is derived from the code verifier.
 		 *
-		 * @return the updated {@code RequestSpec} instance with OIDC configuration applied
+		 * @return the updated instance of the corresponding request specification or chain.
 		 */
-		T oidc();
+		T codeChallengeMethod(String method);
 
 		/**
-		 * Configures the authorization request to utilize the Proof Key for Code Exchange (PKCE) mechanism.
-		 * PKCE enhances the security of authorization code flows by requiring a dynamically generated
-		 * verifier and challenge pair, which is validated during the token exchange process.
+		 * Computes or retrieves the code challenge for the request.
+		 * The code challenge is a critical component in the PKCE (Proof Key for Code Exchange) protocol,
+		 * which enhances security in OAuth 2.0 authorization flows by preventing code interception attacks.
+		 * It is typically a hashed and encoded value derived from the code verifier.
 		 *
-		 * @return the updated {@code RequestSpec} instance with PKCE configuration applied
+		 * @return the code challenge value to be used in the authorization request
 		 */
-		T pkce();
+		T codeChallenge(String codeChallenge);
+
+		T state(String state);
+
+		T nonce(String nonce);
+	}
+
+	/**
+	 * Represents a specification for a request in the form of a fluently configurable interface,
+	 * making it usable for constructing and customizing request configurations in a chained manner.
+	 *
+	 * @param <P> the type of the parent specification to which this request specification belongs.
+	 */
+	interface ReturnableRequestSpec<P> extends RequestSpec<ReturnableRequestSpec<P>> {
+		P and();
 	}
 
 }

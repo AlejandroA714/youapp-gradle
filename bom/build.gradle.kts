@@ -17,6 +17,7 @@ dependencies {
         api(libs.lombok)
         api(libs.mysql.connector)
         api(libs.spring.authorization.server)
+        api(libs.caffeine.cache)
     }
 }
 

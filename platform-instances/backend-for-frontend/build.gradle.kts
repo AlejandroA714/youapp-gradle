@@ -1,4 +1,5 @@
 dependencies{
+    implementation(libs.caffeine.cache)
     implementation(libs.kotlin.reflect)
     implementation(rootProject.libs.bundles.web.flux)
     implementation("org.springframework.security:spring-security-web")
