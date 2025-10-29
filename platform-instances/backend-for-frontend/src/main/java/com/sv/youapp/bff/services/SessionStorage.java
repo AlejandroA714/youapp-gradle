@@ -4,7 +4,7 @@ import com.sv.youapp.bff.dto.SessionRequest;
 
 public interface SessionStorage {
 
-	void save(String key, SessionRequest value);
+  void save(String key, SessionRequest value);
 
-	SessionRequest get(String key);
+  SessionRequest get(String key);
 }
