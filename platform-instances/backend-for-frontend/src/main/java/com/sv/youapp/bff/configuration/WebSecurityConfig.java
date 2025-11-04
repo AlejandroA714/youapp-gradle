@@ -25,8 +25,4 @@ public class WebSecurityConfig {
     // dd.exchange("ADASDA").block();
     return DefaultTokenExchangeService.builder().build();
   }
-
-  //	@Bean
-  //	public Cache<String, Object> cache() {
-  //	}
 }

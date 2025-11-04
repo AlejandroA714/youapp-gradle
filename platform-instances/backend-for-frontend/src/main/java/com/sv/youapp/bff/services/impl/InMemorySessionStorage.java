@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class InMemorySessionStorage implements SessionStorage {
 
+	//TODO: REEMPLACE TO CAFFEINE CACHE INSTED MAP
   private final Map<String, SessionRequest> sessionMap = new HashMap<>();
 
   @Override

@@ -1,9 +1,9 @@
-package com.sv.youapp.bff.internal;
+package com.sv.youapp.bff.oauth2.spec.impl;
 
 import com.sv.youapp.bff.enums.ResponseMode;
 import com.sv.youapp.bff.enums.ResponseType;
-import com.sv.youapp.bff.services.TokenExchangeService.AuthorizationCodeRequestSpec;
-import com.sv.youapp.bff.services.TokenExchangeService.ReturnableRequestSpec;
+import com.sv.youapp.bff.oauth2.spec.AuthorizationCodeRequestSpec;
+import com.sv.youapp.bff.oauth2.spec.RequestSpec.ReturnableRequestSpec;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -23,7 +23,7 @@ public class DefaultRequestSpec implements ReturnableRequestSpec<AuthorizationCo
   @Nullable private String nonce;
   @Nullable private String codeChallenge;
   @Nullable private String codeChallengeMethod;
-  @NonNull private Set<String> scopes = new HashSet<>();
+  @Nullable Set<String> scopes = null;
   @NonNull private String redirectUri = "/oauth2/callback";
   @NonNull private final AuthorizationCodeRequestSpec parent;
   @NonNull private String authorizationUri = "/oauth2/authorize";
@@ -39,23 +39,36 @@ public class DefaultRequestSpec implements ReturnableRequestSpec<AuthorizationCo
     return parent;
   }
 
+  @NonNull
+  public Set<String> scopes() {
+    if (this.scopes == null) {
+      this.scopes = new HashSet<>();
+    }
+    return this.scopes;
+  }
+
+  public String joinedScopes() {
+    if (this.scopes != null) {
+      return this.scopes.stream()
+          .filter(Objects::nonNull)
+          .filter((String s) -> !s.isBlank())
+          .collect(Collectors.joining(" "));
+    }
+    return null;
+  }
+
   @Override
   public ReturnableRequestSpec<AuthorizationCodeRequestSpec> scope(String... scope) {
+    if (this.scopes == null) {
+      this.scopes = new HashSet<>();
+    }
+    try {
+      this.scopes.addAll(Set.of(scope));
+    } catch (UnsupportedOperationException e) {
+      this.scopes = new HashSet<>(this.scopes);
+      this.scopes.addAll(Set.of(scope));
+    }
     this.scopes.addAll(Set.of(scope));
     return this;
-  }
-
-  @Override
-  public ReturnableRequestSpec<AuthorizationCodeRequestSpec> scopes(Set<String> scope) {
-    this.scopes.addAll(scope);
-    return this;
-  }
-
-  public String scopes() {
-    if (this.scopes.isEmpty()) return null;
-    return this.scopes.stream()
-        .filter(Objects::nonNull)
-        .filter((String s) -> !s.isBlank())
-        .collect(Collectors.joining(" "));
   }
 }

@@ -1,16 +1,13 @@
-package com.sv.youapp.bff.internal;
+package com.sv.youapp.bff.oauth2.spec.impl;
 
 import static com.sv.youapp.bff.internal.RequestUtils.codeChallengeS256;
 import static com.sv.youapp.bff.internal.RequestUtils.encode256UrlSafe;
 import static com.sv.youapp.bff.internal.RequestUtils.generateCodeVerifier;
 
-import com.sv.youapp.bff.services.TokenExchangeService;
-import com.sv.youapp.bff.services.TokenExchangeService.AuthorizationCodeRequestSpec;
-import com.sv.youapp.bff.services.TokenExchangeService.ProofKeyForCodeExchangeRequestSpec;
-import com.sv.youapp.bff.services.TokenExchangeService.RequestSpec;
+import com.sv.youapp.bff.oauth2.spec.AuthorizationCodeRequestSpec;
+import com.sv.youapp.bff.oauth2.spec.RequestSpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.NonNull;
@@ -40,7 +37,7 @@ public class DefaultAuthorizationCodeRequest implements AuthorizationCodeRequest
 
   @Override
   public AuthorizationCodeRequestSpec oidc() {
-    this.request.scope("openid");
+    this.request.scopes().add("openid");
     this.request.nonce(encode256UrlSafe());
     return this;
   }
@@ -48,8 +45,7 @@ public class DefaultAuthorizationCodeRequest implements AuthorizationCodeRequest
   @Override
   public AuthorizationCodeRequestSpec pkce() {
     final String codeVerifier = generateCodeVerifier();
-    request.codeChallenge(codeChallengeS256(codeVerifier)).codeChallengeMethod("S256");
-    return this;
+    return request.codeChallenge(codeChallengeS256(codeVerifier)).codeChallengeMethod("S256").and();
   }
 
   @Override
@@ -65,29 +61,24 @@ public class DefaultAuthorizationCodeRequest implements AuthorizationCodeRequest
   }
 
   @Override
-  public AuthorizationCodeRequestSpec oidc(Consumer<TokenExchangeService.OidcRequestSpec> dsl) {
+  public AuthorizationCodeRequestSpec oidc(Consumer<OidcRequestSpec> dsl) {
     if (this.oidcRequest == null) this.oidcRequest = new DefaultOidcRequest();
     dsl.accept(this.oidcRequest);
+    request.scopes().add("openid");
     if (this.oidcRequest.nonce != null) {
-      request.nonce(this.oidcRequest.nonce);
+      return request.nonce(this.oidcRequest.nonce).and();
     }
     return this;
   }
 
   @Override
-  public AuthorizationCodeRequestSpec scope(String... scope) {
-    this.request.scopes(Set.of(scope));
-    return this;
-  }
-
-  @Override
-  public AuthorizationCodeRequestSpec scopes(Set<String> scope) {
-    this.request.scopes(scope);
-    return this;
-  }
-
-  @Override
   public UriComponents build() {
+    if (clientId == null) {
+      throw new IllegalStateException("clientId() is required and was not set");
+    }
+    if (request.redirectUri() == null) {
+      throw new IllegalStateException("redirectUri() is required and was not set");
+    }
     return UriComponentsBuilder.fromUriString(host)
         .path(request.authorizationUri())
         .queryParam("state", request.state())
@@ -95,7 +86,7 @@ public class DefaultAuthorizationCodeRequest implements AuthorizationCodeRequest
         .queryParam("redirect_uri", request.redirectUri())
         .queryParam("response_type", request.responseType())
         .queryParam("response_mode", request.responseMode())
-        .queryParamIfPresent("scope", Optional.ofNullable(request.scopes()))
+        .queryParamIfPresent("scope", Optional.ofNullable(request.joinedScopes()))
         .queryParamIfPresent("nonce", Optional.ofNullable(request.nonce()))
         .queryParamIfPresent("code_challenge", Optional.ofNullable(request.codeChallenge()))
         .queryParamIfPresent(
@@ -112,7 +103,7 @@ public class DefaultAuthorizationCodeRequest implements AuthorizationCodeRequest
 
   @Setter
   @Accessors(fluent = true)
-  public static class DefaultOidcRequest implements TokenExchangeService.OidcRequestSpec {
+  public static class DefaultOidcRequest implements OidcRequestSpec {
     @Nullable private String nonce;
   }
 }

@@ -1,7 +1,11 @@
 package com.sv.youapp.bff.controller;
 
+import com.sv.youapp.bff.dto.AuthorizationResponse;
 import com.sv.youapp.bff.services.TokenExchangeService;
 import java.net.URI;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,28 +16,27 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/oauth2")
 public class OAuth2CallBackController {
 
+	@NonNull
   private final TokenExchangeService tokenExchangeService;
-
-  public OAuth2CallBackController(TokenExchangeService tokenExchangeService) {
-    this.tokenExchangeService = tokenExchangeService;
-  }
 
   @GetMapping("/callback")
   @ResponseStatus(HttpStatus.FOUND)
-  public Mono<Void> callback(@RequestParam("code") String code, ServerHttpResponse res) {
-    // Intercambia el code (opcional) y redirige al esquema personalizado
+  public Mono<AuthorizationResponse> callback(
+      @RequestParam("code") String code,
+      @RequestParam("state") String state,
+      ServerHttpResponse res) {
     return tokenExchangeService
-        .exchange(code)
-        .flatMap(x -> redirect(res, "youapp://oauth2?sid=" + code));
+        .exchange(code);
   }
 
   @GetMapping("/login")
   @ResponseStatus(HttpStatus.FOUND)
   public Mono<Void> login(ServerHttpResponse res) {
-    return tokenExchangeService.init(res);
+    return tokenExchangeService.start(res);
   }
 
   private Mono<Void> redirect(ServerHttpResponse res, String url) {
