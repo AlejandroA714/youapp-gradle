@@ -1,22 +1,20 @@
 package com.sv.youapp.bff.services.impl;
 
-import com.sv.youapp.bff.dto.SessionRequest;
-import com.sv.youapp.bff.services.SessionStorage;
-import java.util.HashMap;
-import java.util.Map;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.sv.youapp.common.authorization.dto.SessionRequest;
+import com.sv.youapp.common.authorization.services.SessionStorage;
+import lombok.NonNull;
 
-public class InMemorySessionStorage implements SessionStorage {
-
-	//TODO: REEMPLACE TO CAFFEINE CACHE INSTED MAP
-  private final Map<String, SessionRequest> sessionMap = new HashMap<>();
+public record InMemorySessionStorage(@NonNull Cache<String, SessionRequest> cache)
+    implements SessionStorage {
 
   @Override
   public void save(String key, SessionRequest value) {
-    sessionMap.put(key, value);
+    cache.put(key, value);
   }
 
   @Override
   public SessionRequest get(String key) {
-    return sessionMap.get(key);
+    return cache.getIfPresent(key);
   }
 }

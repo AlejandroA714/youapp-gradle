@@ -3,8 +3,6 @@ package com.sv.youapp.bff.oauth2.spec.impl;
 import com.sv.youapp.bff.dto.AuthorizationResponse;
 import com.sv.youapp.bff.oauth2.spec.AuthorizationCodeSpec;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
-
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -95,6 +93,8 @@ public class DefaultAuthorizationCode implements AuthorizationCodeSpec {
       spec.headers(
           (HttpHeaders x) -> x.setBasicAuth(clientId, clientSecret, StandardCharsets.UTF_8));
     }
-    return spec.body(BodyInserters.fromFormData(body)).retrieve().bodyToMono(AuthorizationResponse.class);
+    return spec.body(BodyInserters.fromFormData(body))
+        .retrieve()
+        .bodyToMono(AuthorizationResponse.class);
   }
 }

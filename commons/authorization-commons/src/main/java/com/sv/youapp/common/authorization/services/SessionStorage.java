@@ -1,6 +1,6 @@
-package com.sv.youapp.bff.services;
+package com.sv.youapp.common.authorization.services;
 
-import com.sv.youapp.bff.dto.SessionRequest;
+import com.sv.youapp.common.authorization.dto.SessionRequest;
 
 public interface SessionStorage {
 

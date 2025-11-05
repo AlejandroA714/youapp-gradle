@@ -22,6 +22,7 @@ subprojects {
     dependencies{
         compileOnly(rootProject.libs.lombok)
         annotationProcessor(rootProject.libs.lombok)
+        implementation(rootProject.libs.spring.boot.starter.validation)
         implementation(platform(rootProject.libs.bom))
     }
     configurations.configureEach {

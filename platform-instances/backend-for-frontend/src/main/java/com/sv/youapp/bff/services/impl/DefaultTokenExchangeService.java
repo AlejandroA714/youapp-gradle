@@ -1,47 +1,46 @@
 package com.sv.youapp.bff.services.impl;
 
-import static com.sv.youapp.bff.internal.RequestUtils.encode256UrlSafe;
+import static com.sv.youapp.bff.utils.RequestUtils.encode256UrlSafe;
 
 import com.sv.youapp.bff.configuration.ServerPort;
 import com.sv.youapp.bff.dto.AuthorizationResponse;
-import com.sv.youapp.bff.dto.SessionRequest;
-import com.sv.youapp.bff.internal.RequestUtils;
+import com.sv.youapp.bff.oauth2.spec.AuthorizationCodeRequestSpec.ProofKeyForCodeExchangeRequestSpec;
 import com.sv.youapp.bff.oauth2.spec.RequestSpec;
-import com.sv.youapp.bff.services.SessionStorage;
+import com.sv.youapp.bff.properties.BackEndForFrontEndProperties;
 import com.sv.youapp.bff.services.TokenExchangeService;
-import java.net.URI;
+import com.sv.youapp.bff.utils.RequestUtils;
+import com.sv.youapp.common.authorization.dto.SessionRequest;
+import com.sv.youapp.common.authorization.services.SessionStorage;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
-import lombok.Builder;
 import lombok.NonNull;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
-@Builder
-public class DefaultTokenExchangeService implements TokenExchangeService {
-
-  @Builder.Default private final String uri = "/oauth2/token";
-  @Builder.Default private final String redirectUri = "/oauth2/callback";
-  @Builder.Default private final WebClient client = WebClient.create("http://localhost:8082");
-  @NonNull private final SessionStorage sessionStorage = new InMemorySessionStorage();
+public record DefaultTokenExchangeService(
+    @NonNull WebClient webClient,
+    @NonNull SessionStorage sessionStorage,
+    @NonNull BackEndForFrontEndProperties properties)
+    implements TokenExchangeService {
 
   @Override
-  public Mono<AuthorizationResponse> exchange(String code) {
-    // TODO: VALIDATE STATE MATCHES
-    var aa = sessionStorage.get("90901");
-
+  public Mono<AuthorizationResponse> exchange(String code, String state) {
+    SessionRequest request = sessionStorage.get(state);
+    // IF DOESNT EXITS, CANT CONTINUE
+    if (request == null) {
+      throw new IllegalStateException("CRSF DETECTED, SESSION EXPIRED OR INVALID");
+    }
     return TokenExchangeService.authorizationCode()
-			.webClient(client)
-			.code(code)
-			.codeVerifier(aa.codeVerifier())
-        .basic("oidc-client", "pass")
-        .redirectUri(aa.redirectUri())
-			.retrieve();
+        .webClient(webClient)
+        .code(code)
+        .codeVerifier(request.codeVerifier())
+        .basic(properties.clientId(), properties.clientSecret())
+        .redirectUri(request.redirectUri())
+        .retrieve();
   }
 
   @Override
@@ -52,11 +51,10 @@ public class DefaultTokenExchangeService implements TokenExchangeService {
     final String redirectUri = resolveSelf();
     final Set<String> scopes = new HashSet<>();
     UriComponents uri =
-        TokenExchangeService.authorizationCodeRequest("http://localhost:8082")
-            .clientId("oidc-client")
-					.request((RequestSpec<?> x) -> x.scopes(scopes)
-						.state(state)
-						.redirectUri(redirectUri))
+        TokenExchangeService.authorizationCodeRequest(properties.url().toString())
+            .clientId(properties().clientId())
+            .request((RequestSpec<?> x) -> x.scopes(scopes).state(state).redirectUri(redirectUri))
+            .pkce((ProofKeyForCodeExchangeRequestSpec pkce) -> pkce.codeVerifier(codeVerifier))
             .build();
     sessionStorage.save(state, new SessionRequest(state, scopes, redirectUri, codeVerifier, nonce));
     return TokenExchangeService.redirect(res, uri.toUriString());

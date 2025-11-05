@@ -1,4 +1,4 @@
-package com.sv.youapp.bff.internal;
+package com.sv.youapp.bff.utils;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;

@@ -1,8 +1,8 @@
 package com.sv.youapp.bff.oauth2.spec.impl;
 
-import static com.sv.youapp.bff.internal.RequestUtils.codeChallengeS256;
-import static com.sv.youapp.bff.internal.RequestUtils.encode256UrlSafe;
-import static com.sv.youapp.bff.internal.RequestUtils.generateCodeVerifier;
+import static com.sv.youapp.bff.utils.RequestUtils.codeChallengeS256;
+import static com.sv.youapp.bff.utils.RequestUtils.encode256UrlSafe;
+import static com.sv.youapp.bff.utils.RequestUtils.generateCodeVerifier;
 
 import com.sv.youapp.bff.oauth2.spec.AuthorizationCodeRequestSpec;
 import com.sv.youapp.bff.oauth2.spec.RequestSpec;
@@ -14,6 +14,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -73,12 +74,9 @@ public class DefaultAuthorizationCodeRequest implements AuthorizationCodeRequest
 
   @Override
   public UriComponents build() {
-    if (clientId == null) {
-      throw new IllegalStateException("clientId() is required and was not set");
-    }
-    if (request.redirectUri() == null) {
-      throw new IllegalStateException("redirectUri() is required and was not set");
-    }
+    Assert.notNull(clientId, "host is required");
+    Assert.notNull(request.redirectUri(), "redirectUri is required");
+    Assert.notNull(request.state(), "state is required");
     return UriComponentsBuilder.fromUriString(host)
         .path(request.authorizationUri())
         .queryParam("state", request.state())
