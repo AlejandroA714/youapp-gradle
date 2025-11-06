@@ -10,7 +10,7 @@ plugins {
 
 allprojects {
     group = "com.sv.youapp.service"
-    version = rootProject.libs.versions.global
+    version = rootProject.libs.versions.global.get()
 }
 
 subprojects {
@@ -27,7 +27,7 @@ subprojects {
     }
     configurations.configureEach {
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
-        exclude(group = "org.springframework.boot", module = "spring-boot-starter-reactor-netty")
+       // exclude(group = "org.springframework.boot", module = "spring-boot-starter-reactor-netty")
     }
 
     extensions.configure<PublishingExtension>("publishing") {

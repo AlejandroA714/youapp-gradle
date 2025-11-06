@@ -11,13 +11,16 @@ javaPlatform {
 }
 
 dependencies {
-    api(platform (libs.junit.bom))
+    api(platform(libs.junit.bom))
+    api(platform(libs.logbook.bom))
     api(platform(libs.spring.boot.dependencies))
+    api(platform(libs.spring.cloud.dependencies))
     constraints {
         api(libs.lombok)
+        api(libs.caffeine.cache)
         api(libs.mysql.connector)
         api(libs.spring.authorization.server)
-        api(libs.caffeine.cache)
+        api(libs.spring.cloud.starter.gateway)
     }
 }
 

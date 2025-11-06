@@ -52,6 +52,7 @@ public record DefaultTokenExchangeService(
     final Set<String> scopes = new HashSet<>();
     UriComponents uri =
         TokenExchangeService.authorizationCodeRequest(properties.url().toString())
+            // TODO: RECEIVE FROM APP?
             .clientId(properties().clientId())
             .request((RequestSpec<?> x) -> x.scopes(scopes).state(state).redirectUri(redirectUri))
             .pkce((ProofKeyForCodeExchangeRequestSpec pkce) -> pkce.codeVerifier(codeVerifier))

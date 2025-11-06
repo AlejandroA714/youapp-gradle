@@ -2,7 +2,19 @@ server:
   port: 8083
 security:
   oauth2:
-    url: http://localhost:8082
+    url: http://192.168.1.24:8082
     client-id: ${CLIENT_USERNAME}
     client-secret: ${CLIENT_SECRET_PLAIN}
 
+spring:
+  main:
+    web-application-type: reactive
+
+logbook:
+  format:
+    style: http
+
+logging:
+  level:
+    #org.springframework.boot.autoconfigure: DEBUG
+    org.zalando.logbook: TRACE

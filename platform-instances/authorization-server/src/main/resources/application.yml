@@ -7,7 +7,7 @@ spring:
       password: ${SECURITY_PASSWORD}
     oauth2:
       authorizationserver:
-        issuer: https://auth.ejemplo.com
+        issuer: http://192.168.1.24
         client:
           oidc-client:
             registration:
@@ -27,16 +27,20 @@ spring:
               redirect-uris:
                 - http://192.168.1.24:8083/oauth2/callback
                 - https://oidcdebugger.com/debug
-            require-authorization-consent: true
-            require-proof-key: false
+            require-authorization-consent: false
+            require-proof-key: true
             token:
               access-token-time-to-live: 16h
               refresh-token-time-to-live: 30d
               reuse-refresh-tokens: false
               access-token-format: self-contained
+logbook:
+  format:
+    style: http
 logging:
   level:
-    org.springframework.security: TRACE
-    org.hibernate.orm.connections.pooling: WARN
+    root: INFO
+    org.zalando.logbook: TRACE
+    org.springframework.security: INFO
+    org.hibernate.orm.connections.pooling: INFO
     org.hibernate.orm.jdbc.extract: DEBUG
-    org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer: TRACE

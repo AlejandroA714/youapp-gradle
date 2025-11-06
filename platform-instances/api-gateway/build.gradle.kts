@@ -1,5 +1,5 @@
 dependencies {
-    implementation(rootProject.libs.bundles.web.flux) {
-        exclude("org.springframework.boot", "spring-boot-starter-reactor-netty")
-    }
+    implementation(libs.bundles.gateway)
+    implementation("org.zalando:logbook-netty")
+    implementation("io.netty:netty-resolver-dns-native-macos")
 }

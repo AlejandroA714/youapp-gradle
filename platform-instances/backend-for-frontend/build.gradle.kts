@@ -7,4 +7,5 @@ dependencies{
     implementation("org.springframework.security:spring-security-config")
     implementation("jakarta.validation:jakarta.validation-api")
     testImplementation("io.projectreactor:reactor-test")
+    implementation(rootProject.libs.spring.boot.starter.logbook)
 }

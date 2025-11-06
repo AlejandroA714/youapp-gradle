@@ -1,6 +1,5 @@
 package com.sv.youapp.bff.controller;
 
-import com.sv.youapp.bff.dto.AuthorizationResponse;
 import com.sv.youapp.bff.services.TokenExchangeService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +21,14 @@ public class OAuth2CallBackController {
 
   @GetMapping("/callback")
   @ResponseStatus(HttpStatus.FOUND)
-  public Mono<AuthorizationResponse> callback(
+  public Mono<Void> callback(
       @RequestParam("code") String code,
       @RequestParam("state") String state,
       ServerHttpResponse res) {
-    return tokenExchangeService.exchange(code, state);
-    // TODO: REDIRECT RES
+    // TODO: SOLVE WITH /.well-know/assetslink.json
+    return tokenExchangeService
+        .exchange(code, state)
+        .flatMap(x -> TokenExchangeService.redirect(res, "youapp://oauth2?sid=" + x.accessToken()));
   }
 
   @GetMapping("/login")
