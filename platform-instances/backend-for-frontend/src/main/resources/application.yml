@@ -2,7 +2,8 @@ server:
   port: 8083
 security:
   oauth2:
-    url: http://192.168.1.24:8082
+    #url: http://${LOCAL_IP}:8082
+    url: https://wombed-intramuscular-lanell.ngrok-free.app
     client-id: ${CLIENT_USERNAME}
     client-secret: ${CLIENT_SECRET_PLAIN}
 

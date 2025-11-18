@@ -1,5 +1,6 @@
 server:
   port: 8082
+  forward-headers-strategy: framework
 spring:
   security:
     user:
@@ -7,7 +8,7 @@ spring:
       password: ${SECURITY_PASSWORD}
     oauth2:
       authorizationserver:
-        issuer: http://192.168.1.24
+        issuer: http://${LOCAL_IP}
         client:
           oidc-client:
             registration:
@@ -15,7 +16,7 @@ spring:
               client-secret: ${CLIENT_SECRET}
               client-authentication-methods:
                 - client_secret_basic
-                - client_secret_post
+                #- client_secret_post
               scopes:
                 - openid
                 - profile
@@ -25,7 +26,8 @@ spring:
                 - urn:ietf:params:oauth:grant-type:native
                 - refresh_token
               redirect-uris:
-                - http://192.168.1.24:8083/oauth2/callback
+                - http://${LOCAL_IP}:8083/oauth2/callback
+                - https://wombed-intramuscular-lanell.ngrok-free.app/oauth2/callback
                 - https://oidcdebugger.com/debug
             require-authorization-consent: false
             require-proof-key: true
@@ -35,12 +37,14 @@ spring:
               reuse-refresh-tokens: false
               access-token-format: self-contained
 logbook:
+  filter:
+    enabled: false
   format:
     style: http
 logging:
   level:
     root: INFO
     org.zalando.logbook: TRACE
-    org.springframework.security: INFO
+    org.springframework.security: TRACE
     org.hibernate.orm.connections.pooling: INFO
     org.hibernate.orm.jdbc.extract: DEBUG

@@ -1,5 +1,8 @@
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.net.Inet4Address
+import java.net.NetworkInterface
+import java.net.SocketException
 
 plugins {
     alias(libs.plugins.java.api)
@@ -28,6 +31,29 @@ subprojects {
     configurations.configureEach {
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
        // exclude(group = "org.springframework.boot", module = "spring-boot-starter-reactor-netty")
+    }
+
+    val outputDir = layout.buildDirectory.dir("generated/resources")
+    val generateLocalIpProps = tasks.register("generateLocalIpProps") {
+        outputs.dir(outputDir)
+        doLast {
+            val ip = resolveNonLoopbackAddress()
+            val file = outputDir.get().file("application-local.properties").asFile
+            file.parentFile.mkdirs()
+            file.writeText(
+                """
+                    LOCAL_IP=$ip
+                    """.trimIndent() + "\n"
+            )
+            println("[${project.name}] Generated local-ip.properties with app.local-ip=$ip")
+        }
+    }
+    val sourceSets = extensions.getByType<SourceSetContainer>()
+    sourceSets.named("main") {
+        resources.srcDir(outputDir)
+    }
+    tasks.named("processResources") {
+        dependsOn(generateLocalIpProps)
     }
 
     extensions.configure<PublishingExtension>("publishing") {
@@ -62,6 +88,31 @@ subprojects {
             user = "spring"
             workingDirectory = "/app"
         }
+    }
+}
+
+
+fun resolveNonLoopbackAddress(): String {
+    return try {
+        val interfaces = NetworkInterface.getNetworkInterfaces()
+        while (interfaces.hasMoreElements()) {
+            val ni = interfaces.nextElement()
+            if (!ni.isUp || ni.isLoopback || ni.isVirtual) continue
+
+            val addrs = ni.inetAddresses
+            while (addrs.hasMoreElements()) {
+                val addr = addrs.nextElement()
+                if (!addr.isLoopbackAddress
+                    && addr is Inet4Address
+                    && addr.isSiteLocalAddress
+                ) {
+                    return addr.hostAddress
+                }
+            }
+        }
+        "127.0.0.1"
+    } catch (e: SocketException) {
+        "127.0.0.1"
     }
 }
 

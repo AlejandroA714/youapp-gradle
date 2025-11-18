@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Redirigiendo…</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --color-primary: #6200EE;
+      --color-on-primary: #FFFFFF;
+      --color-secondary: #03DAC5;
+      --color-background: #1A0938;
+      --color-on-background: #FFFFFF;
+      --color-surface: #24114A;
+      --color-on-surface: #FFFFFF;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, var(--color-surface) 0, var(--color-background) 45%, #050214 100%);
+      color: var(--color-on-background);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--color-surface);
+      border-radius: 16px;
+      padding: 24px 20px 20px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .logo-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 16px;
+      /*background: radial-gradient(circle at 0 0, #45e3ff 0, #6200EE 40%, #ff4fa3 100%);*/
+      padding: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    .content {
+      margin-top: 12px;
+      font-size: 14px;
+      line-height: 1.5;
+      opacity: 0.9;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 18px 0 16px;
+      font-size: 14px;
+      color: var(--color-secondary);
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid rgba(3, 218, 197, 0.3);
+      border-top-color: var(--color-secondary);
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .primary-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin-top: 4px;
+      padding: 11px 16px;
+      border-radius: 999px;
+      border: none;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      background: var(--color-primary);
+      color: var(--color-on-primary);
+      box-shadow: 0 8px 24px rgba(98, 0, 238, 0.6);
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background 0.12s ease-out;
+    }
+
+    .primary-button:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+      background: #4b00c0;
+    }
+
+    .hint {
+      margin-top: 10px;
+      font-size: 12px;
+      opacity: 0.75;
+      text-align: center;
+    }
+
+    .link-secondary {
+      color: var(--color-secondary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .link-secondary:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-header">
+      <div class="logo-circle">
+        <!-- Reemplaza logo.png por la ruta real de tu logo de audífonos -->
+        <img src="https://wombed-intramuscular-lanell.ngrok-free.app/ic_logo.png" alt="YouApp logo" class="logo-img" />
+      </div>
+      <div>
+        <div class="title">Conectando con YouApp</div>
+        <div class="subtitle">Estamos validando tu inicio de sesión…</div>
+      </div>
+    </div>
+
+    <p class="content">
+      En unos segundos deberías ver la aplicación abrirse automáticamente.
+    </p>
+
+    <div class="status">
+      <div class="spinner"></div>
+      <span>Abriendo la app en <span id="countdown">5</span> s…</span>
+    </div>
+
+    <a id="openApp" class="primary-button" href="youapp://oauth2?sid=%s">
+      Abrir YouApp ahora
+    </a>
+
+    <p class="hint">
+      Si no se abre automáticamente, toca el botón superior.
+    </p>
+  </div>
+
+  <script>
+    (function() {
+      var sid = "%s";
+      var url = "youapp://oauth2?sid=" + encodeURIComponent(sid);
+      var seconds = 5;
+      var countdownEl = document.getElementById("countdown");
+
+      var interval = setInterval(function () {
+        seconds--;
+        if (seconds <= 0) {
+          clearInterval(interval);
+          window.location.href = url;
+        }
+        if (countdownEl && seconds >= 0) {
+          countdownEl.textContent = seconds;
+        }
+      }, 1000);
+    })();
+  </script>
+</body>
+</html>

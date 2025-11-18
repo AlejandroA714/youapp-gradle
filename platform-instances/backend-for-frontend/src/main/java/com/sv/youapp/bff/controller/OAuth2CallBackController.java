@@ -25,10 +25,11 @@ public class OAuth2CallBackController {
       @RequestParam("code") String code,
       @RequestParam("state") String state,
       ServerHttpResponse res) {
-    // TODO: SOLVE WITH /.well-know/assetslink.json
+		// TODO: MANAGE OAUTH2 ERROR EXCEPTIONS
+		// TODO: SEND sid INSTEAD OF ACTUAL TOKEN
     return tokenExchangeService
         .exchange(code, state)
-        .flatMap(x -> TokenExchangeService.redirect(res, "youapp://oauth2?sid=" + x.accessToken()));
+        .flatMap(x -> TokenExchangeService.redirect(res, "https://wombed-intramuscular-lanell.ngrok-free.app/oauth2/redirect?sid=" + x.accessToken()));
   }
 
   @GetMapping("/login")

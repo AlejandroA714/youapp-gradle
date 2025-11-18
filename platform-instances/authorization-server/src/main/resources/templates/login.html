@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title>Iniciar sesión · YouApp</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <style>
+    :root {
+      --color-primary: #6200EE;
+      --color-on-primary: #FFFFFF;
+      --color-secondary: #03DAC5;
+      --color-background: #1A0938;
+      --color-on-background: #FFFFFF;
+      --color-surface: #24114A;
+      --color-on-surface: #FFFFFF;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, var(--color-surface) 0, var(--color-background) 45%, #050214 100%);
+      color: var(--color-on-background);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--color-surface);
+      border-radius: 16px;
+      padding: 24px 20px 20px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .logo-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      /*background: radial-gradient(circle at 0 0, #45e3ff 0, #6200EE 40%, #ff4fa3 100%);*/
+      padding: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .title { font-size: 20px; font-weight: 600; }
+    .subtitle { font-size: 14px; opacity: .8; margin-top: 2px; }
+
+    .form {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    label {
+      font-size: 13px;
+      opacity: .9;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.15);
+      color: var(--color-on-surface);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .input:focus {
+      border-color: var(--color-secondary);
+      box-shadow: 0 0 0 1px rgba(3,218,197,0.5);
+    }
+
+    .primary-button {
+      margin-top: 4px;
+      width: 100%;
+      padding: 11px 16px;
+      border-radius: 999px;
+      border: none;
+      background: var(--color-primary);
+      color: var(--color-on-primary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(98,0,238,0.6);
+      transition: transform .12s ease-out, box-shadow .12s ease-out, background .12s ease-out;
+    }
+
+    .primary-button:active {
+      transform: translateY(1px) scale(.99);
+      box-shadow: 0 4px 14px rgba(0,0,0,.6);
+      background: #4b00c0;
+    }
+
+    .error {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #ff8585;
+    }
+
+    .hint {
+      margin-top: 14px;
+      font-size: 12px;
+      opacity: .75;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="card-header">
+    <div class="logo-circle">
+      <!-- logo servido por el gateway -->
+      <img src="https://wombed-intramuscular-lanell.ngrok-free.app/ic_logo.png" alt="YouApp" class="logo-img"/>
+    </div>
+    <div>
+      <div class="title">Iniciar sesión en YouApp</div>
+      <div class="subtitle">Autoriza el acceso desde tu dispositivo.</div>
+    </div>
+  </div>
+
+  <div th:if="${param.error}" class="error">
+    Credenciales incorrectas. Inténtalo de nuevo.
+  </div>
+
+  <form class="form" th:action="@{/login}" method="post">
+    <div>
+      <label for="username">Usuario</label>
+      <input class="input"
+             type="text"
+             id="username"
+             name="username"
+             autocomplete="username"
+             autofocus/>
+    </div>
+
+    <div>
+      <label for="password">Contraseña</label>
+      <input class="input"
+             type="password"
+             id="password"
+             name="password"
+             autocomplete="current-password"/>
+    </div>
+
+    <button type="submit" class="primary-button">Entrar</button>
+  </form>
+
+  <p class="hint">
+    Estás en el servidor de autorización de YouApp.
+  </p>
+</div>
+</body>
+</html>

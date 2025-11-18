@@ -4,11 +4,14 @@ spring:
       server:
         webflux:
           routes:
-            - id: after_route
-              uri: http://192.168.1.24:8083
+            - id: callback
+              uri: http://${LOCAL_IP}:8083
               predicates:
-                - Path=/oauth2/**
-
+                - Path=/oauth2/callback, /oauth2/login, /oauth2/redirect
+            - id: authorize
+              uri: http://${LOCAL_IP}:8082
+              predicates:
+                - Path=/oauth2/authorize, /oauth2/token, /login, /default-ui.css
 logbook:
   format:
     style: http

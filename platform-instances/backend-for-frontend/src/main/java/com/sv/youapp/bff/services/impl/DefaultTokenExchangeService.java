@@ -48,8 +48,9 @@ public record DefaultTokenExchangeService(
     final String state = encode256UrlSafe();
     final String nonce = encode256UrlSafe();
     final String codeVerifier = encode256UrlSafe();
-    final String redirectUri = resolveSelf();
-    final Set<String> scopes = new HashSet<>();
+    //final String redirectUri = resolveSelf();
+    final String redirectUri = "https://wombed-intramuscular-lanell.ngrok-free.app/oauth2/callback";
+		final Set<String> scopes = new HashSet<>();
     UriComponents uri =
         TokenExchangeService.authorizationCodeRequest(properties.url().toString())
             // TODO: RECEIVE FROM APP?
